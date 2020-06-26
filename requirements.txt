@@ -1,0 +1,6 @@
+face_recognition
+numpy
+opencv-python
+opencv-contrib-python
+Pillow
+# apt install cmake

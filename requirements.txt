@@ -3,7 +3,9 @@ numpy
 opencv-python
 Pillow
 qrcode
-SpeechRecognition
+pyaudio
+vosk
+
 # install pyaudio from source:
 # git clone https://people.csail.mit.edu/hubert/git/pyaudio.git; cd pyaudio; python setup.py install
 # apt install cmake

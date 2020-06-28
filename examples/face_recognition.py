@@ -15,7 +15,7 @@ with Robot(ip='192.168.1.102') as robot:
             # 开始识别
             detector.detect(image)
             # 将识别到的人脸信息（位置和名字）画到图上
-            detector.draw(image, boxes=detector.detected_faces, names=detector.recognized_faces)
+            detector.draw_face_info(image, locations=True, names=True, landmarks=False)
 
             cv2.imshow('face recognition', image)
 

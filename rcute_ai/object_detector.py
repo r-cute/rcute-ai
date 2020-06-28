@@ -52,19 +52,36 @@ class ObjectDetector:
                 ret_boxes.append((x, y, w, h))
                 ret_labels.append(self._labels[class_ids[i]])
                 ret_confidences.append(confidences[i])
-        return ret_boxes, ret_labels, ret_confidences
+        self._boxes = ret_boxes
+        self._names = ret_labels
+        self._confidences = ret_confidences
 
-    def draw(self, img, *, labels=None, boxes=None, confidences=None, color=(0,0,180)):
+    @property
+    def object_names(self):
+        return self._names
+
+    @property
+    def object_locations(self):
+        return self._boxes
+
+    @property
+    def confidences(self):
+        return self._confidences
+
+
+    def draw_object_info(self, img, *, names=True, locations=True, confidences=False, color=(0,0,180), text_color=(255,255,255)):
         if not self._use_bgr:
             r, g, b = color
             color = b, g, r
-        if boxes is not None:
-            for i, (x, y, w, h) in enumerate(boxes):
+            r, g, b = text_color
+            text_color = b, g, r
+        if locations:
+            for i, (x, y, w, h) in enumerate(self._boxes):
                 cv2.rectangle(img, (x, y), (x+w, y+h), color, 1)
-                text = ((labels[i]+": ") if labels is not None else '') + ("{:.2f}".format(confidences[i]) if confidences is not None else '')
+                text = ((self._names[i]+": ") if names else '') + ("{:.2f}".format(self._confidences[i]) if confidences else '')
                 if text:
                     cv2.rectangle(img, (x, y), (x+len(text)*9, y+20), color, cv2.FILLED)
-                    cv2.putText(img, text, (x, y+15), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255,255,255), 1)
+                    cv2.putText(img, text, (x, y+15), cv2.FONT_HERSHEY_SIMPLEX, 0.5, text_color, 1)
 
 
 

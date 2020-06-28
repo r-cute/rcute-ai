@@ -14,7 +14,7 @@ with Robot(ip='192.168.1.102') as robot:
             obj_info = detector.detect(image)
 
             # 将识别到的物体的信息画到图中
-            detector.draw(image, obj_info)
+            detector.draw_object_info(image)
 
             cv2.imshow('object detection', image)
 

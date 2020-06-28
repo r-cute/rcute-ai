@@ -25,7 +25,7 @@ class FaceDetector:
         img = Image.new('RGB', (15*len(name), 20), 'black')
         draw = ImageDraw.Draw(img)
         draw.text((0,0), name, font=self._font, textColor=(255,255,255))
-        return np.asarray(img)[:,:,::-1]
+        return np.asarray(img)/255
 
     def memorize(self, name, file_or_img):
         if isinstance(file_or_img, str):
@@ -50,14 +50,14 @@ class FaceDetector:
         self._detected_faces = self._recognized_faces = self._face_landmarks_list = None
 
     @property
-    def detected_faces(self):
+    def face_locations(self):
         if self._detected_faces is None:
             self._detected_faces = [(left, top, right, bottom) for top, right, bottom, left in self._face_locations]
             self._detected_faces = [(int(a*self._resize_factor) for a in p) for p in self._detected_faces]
         return self._detected_faces
 
     @property
-    def recognized_faces(self):
+    def face_names(self):
         if self._recognized_faces is None:
             self._current_encodings = face_recognition.face_encodings(self._current_image, self._face_locations)
             self._recognized_faces = []
@@ -73,7 +73,7 @@ class FaceDetector:
         return self._recognized_faces
 
     @property
-    def detected_face_landmarks(self):
+    def face_landmarks(self):
         if self._face_landmarks_list is None:
             self._face_landmarks_list = []
             for landmarks in face_recognition.face_landmarks(self._current_image):
@@ -83,14 +83,17 @@ class FaceDetector:
                 self._face_landmarks_list.append(ret_landmarks)
         return self._face_landmarks_list
 
-    def draw(self, img, *, boxes=None, names=None, landmarks=None, color=(0,0,180)):
+    def draw_face_info(self, img, *, locations=True, names=False, landmarks=False, color=(0,0,180), text_color=(255,255,255)):
         if not self._use_bgr:
             r, g, b = color
             color = b, g, r
+            r, g, b = text_color
+            text_color = b, g, r
         h, w = img.shape[:2]
-        if boxes and names:
-            for (x, y, x1, y1), name in zip(boxes, names):
-                cv2.rectangle(img, (x, y), (x1, y1), color, 1)
+        if names:
+            for (x, y, x1, y1), name in zip(self.face_locations, self.face_names):
+                if locations:
+                    cv2.rectangle(img, (x, y), (x1, y1), color, 1)
                 try:
                     index = self._face_names.index(name)
                 except ValueError:
@@ -102,12 +105,13 @@ class FaceDetector:
                 cv2.rectangle(img, (x, sy), (sx1, sy1), color, cv2.FILLED)
                 # font = cv2.FONT_HERSHEY_DUPLEX
                 # cv2.putText(img, name if name else 'Unknown', (x+6, y1-6), font, 0.5, (255, 255, 255), 1)
-                img[sy:sy1, sx:sx1] = cv2.bitwise_or(img[sy:sy1, sx:sx1], name_image)
-        elif boxes:
-            for x, y, x1, y1 in boxes:
+                # img[sy:sy1, sx:sx1] = cv2.bitwise_or(img[sy:sy1, sx:sx1], name_image)
+                img[sy:sy1, sx:sx1] = (img[sy:sy1, sx:sx1]*(1-name_image)+name_image*text_color).astype(np.uint8)
+        elif locations:
+            for x, y, x1, y1 in self.face_locations:
                 cv2.rectangle(img, (x, y), (x1, y1), color, 1)
         if landmarks:
-            for lm in landmarks:
+            for lm in self.face_landmarks:
                 cv2.polylines(img, [np.array(points, np.int32).reshape(-1,1,2) for points in lm.values()], 1, color)
 
 

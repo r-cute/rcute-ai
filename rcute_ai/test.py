@@ -1,15 +1,22 @@
-import speech_recognition as sr
+import numpy as np
+import cv2
+from PIL import Image, ImageFont, ImageDraw
 
-# obtain audio from the microphone
-r = sr.Recognizer()
-with sr.Microphone() as source:
-    print("Say something!")
-    audio = r.listen(source)
+img = Image.new('RGB', (100, 100), 'black')
+draw = ImageDraw.Draw(img)
+draw.text((0,0), 'abc', font=ImageFont.truetype("../resources/msyh.ttc", 30), textColor=(255,255,255))
+img = np.asarray(img)/255
 
-# recognize speech using Sphinx
-try:
-    print("Sphinx thinks you said " + r.recognize_sphinx(audio))
-except sr.UnknownValueError:
-    print("Sphinx could not understand audio")
-except sr.RequestError as e:
-    print("Sphinx error; {0}".format(e))
+sr1 = Image.new('RGB', (100, 100), 'black')
+sr1 = np.asarray(sr1)
+
+dst = sr1*(1-img)+(img)*(200,0,200)
+print(dst.shape)
+cv2.imshow('a', sr1)
+cv2.imshow('b', img)
+cv2.imshow('f', dst.astype(np.uint8))
+cv2.waitKey(100)
+input()
+
+
+

@@ -2,6 +2,7 @@ import face_recognition
 import cv2
 from PIL import Image, ImageFont, ImageDraw
 import numpy as np
+from . import util
 
 def resize_320x240(img):
     h, w, c = img.shape
@@ -18,7 +19,7 @@ class FaceDetector:
         self._face_names = []
         self._name_images = []
         self._use_bgr = use_bgr
-        self._font = ImageFont.truetype("../resources/msyh.ttc", 15)
+        self._font = ImageFont.truetype(util.resource("msyh.ttc"), 15)
         self._unknown_name_image = self.create_name_image("陌生人")
 
     def create_name_image(self, name):

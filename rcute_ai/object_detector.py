@@ -1,11 +1,12 @@
 import cv2
 import numpy as np
+from . import util
 
 class ObjectDetector:
     def __init__(self,*, confidence_threshold=.5, nms_threshold=.3, use_bgr=True,
-        labels='../resources/coco.names',
-        config='../resources/yolov3-coco.cfg',
-        weights='../resources/yolov3-coco.weights'):
+        labels=util.resource('yolov3/coco.names'),
+        config=util.resource('yolov3/yolov3-coco.cfg'),
+        weights=util.resource('yolov3/yolov3-coco.weights')):
 
         self._use_bgr = use_bgr
         self._confidence_threshold = confidence_threshold

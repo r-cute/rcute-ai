@@ -2,7 +2,7 @@ import cv2
 import numpy as np
 from . import util
 
-class ObjectDetector:
+class ObjectRecognizer:
     def __init__(self,*, confidence_threshold=.5, nms_threshold=.3, use_bgr=True,
         labels=util.resource('yolov3/coco.names'),
         config=util.resource('yolov3/yolov3-coco.cfg'),
@@ -22,7 +22,7 @@ class ObjectDetector:
         self._layer_names = self._net.getLayerNames()
         self._layer_names = [self._layer_names[i[0] - 1] for i in self._net.getUnconnectedOutLayers()]
 
-    def detect(self, img):
+    def recognize(self, img):
         h, w = img.shape[:2]
         blob = cv2.dnn.blobFromImage(img, 1 / 255.0, (320, 320), swapRB=self._use_bgr, crop=False)
         self._net.setInput(blob)
@@ -53,36 +53,22 @@ class ObjectDetector:
                 ret_boxes.append((x, y, w, h))
                 ret_labels.append(self._labels[class_ids[i]])
                 ret_confidences.append(confidences[i])
-        self._boxes = ret_boxes
-        self._names = ret_labels
-        self._confidences = ret_confidences
+        return ret_boxes, ret_labels, ret_confidences
 
-    @property
-    def object_names(self):
-        return self._names
-
-    @property
-    def object_locations(self):
-        return self._boxes
-
-    @property
-    def confidences(self):
-        return self._confidences
-
-
-    def draw_object_info(self, img, *, names=True, locations=True, confidences=False, color=(0,0,180), text_color=(255,255,255)):
+    def draw_labels(self, img, locations, names=None, color=(0,0,180), text_color=(255,255,255)):
         if not self._use_bgr:
             r, g, b = color
             color = b, g, r
             r, g, b = text_color
             text_color = b, g, r
-        if locations:
-            for i, (x, y, w, h) in enumerate(self._boxes):
+        if names:
+            for (x, y, w, h), name in zip(locations, names):
                 cv2.rectangle(img, (x, y), (x+w, y+h), color, 1)
-                text = ((self._names[i]+": ") if names else '') + ("{:.2f}".format(self._confidences[i]) if confidences else '')
-                if text:
-                    cv2.rectangle(img, (x, y), (x+len(text)*9, y+20), color, cv2.FILLED)
-                    cv2.putText(img, text, (x, y+15), cv2.FONT_HERSHEY_SIMPLEX, 0.5, text_color, 1)
+                cv2.rectangle(img, (x, y), (x+len(name)*9, y+20), color, cv2.FILLED)
+                cv2.putText(img, name, (x, y+15), cv2.FONT_HERSHEY_SIMPLEX, 0.5, text_color, 1)
+        else:
+            for (x, y, w, h) in locations:
+                cv2.rectangle(img, (x, y), (x+w, y+h), color, 1)
 
 
 

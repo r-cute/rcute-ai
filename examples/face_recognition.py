@@ -1,21 +1,22 @@
-from rcute_ai import FaceDetector
+from rcute_ai import FaceRecognizer
 from rcute_cozmars import Robot
 
 # 新建一个人脸识别器
-detector = FaceDetector()
+rec = FaceRecognizer()
 
 # 让人脸器记住两人的样子
-detector.memorize('李雷', './lilei.jpg')
-detector.memorize('韩梅梅', './hanmeimei.jpg')
+rec.memorize('李雷', './lilei.jpg')
+rec.memorize('韩梅梅', './hanmeimei.jpg')
 
 with Robot(ip='192.168.1.102') as robot:
     with robot.camera:
         for image in robot.camera.output_stream:
 
-            # 开始识别
-            detector.detect(image)
+            # # 识别图像中的人脸位置和人名
+            locations, names = rec.recognize(image)
+
             # 将识别到的人脸信息（位置和名字）画到图上
-            detector.draw_face_info(image, locations=True, names=True, landmarks=False)
+            rec.draw_labels(image, locations, names)
 
             cv2.imshow('face recognition', image)
 

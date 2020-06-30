@@ -1,8 +1,8 @@
-from rcute_ai import ObjectDetector
+from rcute_ai import ObjectRecognizer
 from rcute_cozmars import Robot
 
 # 新建一个物体识别器
-detector = ObjectDetector()
+rec = ObjectRecognizer()
 
 with Robot(ip='192.168.1.102') as robot:
 
@@ -11,10 +11,11 @@ with Robot(ip='192.168.1.102') as robot:
     with robot.camera:
         for image in robot.camera.output_stream:
 
-            obj_info = detector.detect(image)
+            # 识别图像中的物体位置和物体名称
+            locations, names = rec.detect(image)
 
             # 将识别到的物体的信息画到图中
-            detector.draw_object_info(image)
+            detector.draw_labels(image, locations, names)
 
             cv2.imshow('object detection', image)
 

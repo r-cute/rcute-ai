@@ -1,5 +1,5 @@
 '''
-语音识别实验，对着Cozmars的麦克风说: “阿Q，前进” 或 阿Q，“结束程序”
+语音识别实验，程序开始后对着Cozmars的麦克风说: “阿Q，前进” 或 阿Q，“结束程序”
 '''
 from rcute_ai import SpeechRecognizer, HotwordRecognizer
 from rcute_cozmars import Robot

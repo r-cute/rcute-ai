@@ -1,6 +1,7 @@
 import setuptools
+from os import path
 
-with open("./README.md", 'r') as f:
+with open('./README.md', 'r') as f:
     long_description = f.read()
 
 with open('./requirements.txt', 'r') as f:
@@ -8,7 +9,7 @@ with open('./requirements.txt', 'r') as f:
 
 setuptools.setup(
     name="rcute-ai",
-    version="1.0",
+    version="0.9",
     author="Huang Yan",
     author_email="hyansuper@foxmail.com",
     description="Simple wrapper over some python libs for image/audio detection/recognition etc",

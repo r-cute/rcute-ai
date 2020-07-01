@@ -1,9 +1,10 @@
 from . import util
 
 import sys
-sys.path.append(util.restream('snowboy'))
+sys.path.append(util.resource('snowboy'))
 import snowboydetect
 
+import logging
 logger = logging.getLogger(__name__)
 
 class HotwordRecognizer:
@@ -22,7 +23,7 @@ class HotwordRecognizer:
                         sensitivity=.5,
                         audio_gain=1):
 
-        elif not isinstance(hotword_model, list):
+        if not isinstance(hotword_model, list):
             hotword_model = [hotword_model]
         if isinstance(sensitivity, list):
             assert len(hotword_model) == len(sensitivity), 'Number of hotword_model does not match number of sensitivity'

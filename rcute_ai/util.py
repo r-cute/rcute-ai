@@ -1,6 +1,6 @@
 from os import path, listdir, environ
 
-BUILDING_RTD = environ.get("BUILDING_RCUTE_AI_RTD") == "1"
+BUILDING_RTD = environ.get("RCUTE_AI_RTD") == "1"
 
 RESOURCES = path.join(path.dirname(__file__), '../resources')
 def resource(file):

@@ -11,8 +11,6 @@
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
 import os
-os.environ["BUILDING_RCUTE_AI_RTD"] = "1"
-
 import sys
 sys.path.insert(0, os.path.abspath('../../'))
 

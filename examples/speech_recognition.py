@@ -1,6 +1,3 @@
-'''
-语音识别实验，程序开始后对着Cozmars的麦克风说: “阿Q，前进” 或 阿Q，“结束程序”
-'''
 from rcute_ai import SpeechRecognizer, HotwordRecognizer
 from rcute_cozmars import Robot
 
@@ -10,7 +7,8 @@ hotword_rec = HotwordRecognizer()
 # 新建一个语音识别器
 speech_rec = SpeechRecognizer()
 
-with Robot(ip='192.168.1.102') as robot:
+# 把 IP 换成你的 Cozmars IP 地址
+with Robot('192.168.1.102') as robot:
     with robot.microphone as mic:
 
         while True:
@@ -27,4 +25,3 @@ with Robot(ip='192.168.1.102') as robot:
                 robot.backward(2)
             elif text == '结束程序':
                 break
-

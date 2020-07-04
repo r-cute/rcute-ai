@@ -1,8 +1,11 @@
-import face_recognition
-import cv2
-from PIL import Image, ImageFont, ImageDraw
-import numpy as np
 from . import util
+
+if not util.BUILDING_RTD:
+    import face_recognition
+    import cv2
+    from PIL import Image, ImageFont, ImageDraw
+    import numpy as np
+
 
 def resize_320x240(img):
     h, w, c = img.shape
@@ -14,7 +17,12 @@ def resize_320x240(img):
     return img, 1
 
 class FaceRecognizer:
-    """人脸识别器，可以从图像中检测人脸的位置并与已知的人脸对比识别他/她们是谁
+    """人脸识别器，是对 |face_recognition| 的简单封装，可以从图像中检测人脸的位置并与已知的人脸对比识别他/她们是谁
+
+    .. |face_recognition| raw:: html
+
+       <a href='https://pypi.org/project/face-recognition/' target='blank'>face_recognition</a>
+
 
     :param use_bgr: 要识别的图片是否是“BGR”色彩模式，默认是 `True` ，“BGR”是opencv默认的模式，设为 `False` 则表示使用“RGB”模式
     :type use_bgr: bool, optional
@@ -74,7 +82,9 @@ class FaceRecognizer:
 
         :param img: 用来识别的图像
         :type img: numpy.ndarray
-        :return: 返回识别到的人脸的位置数组和对应的名字数组，位置数组中的每个元素是一个 `tuple` ，包含人脸中心的坐标和人脸的宽和高： `(centerX, centerY, width, height)`
+        :return: 返回识别到的人脸的位置数组和对应的名字数组
+
+            位置数组中的每个元素是一个 `tuple` ，包含人脸中心的坐标和人脸的宽和高： `(centerX, centerY, width, height)`
         :rtype: tuple
         """
         img, resize_factor = resize_320x240(img)

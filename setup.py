@@ -1,5 +1,12 @@
 import setuptools
-from os import path
+import os
+
+here = os.path.abspath(os.path.dirname(__file__))
+
+with open(os.path.join(here, 'rcute_cozmars', 'version.py')) as f:
+    ns = {}
+    exec(f.read(), ns)
+    version = ns['__version__']
 
 with open('./README.md', 'r') as f:
     long_description = f.read()
@@ -9,7 +16,7 @@ with open('./requirements.txt', 'r') as f:
 
 setuptools.setup(
     name="rcute-ai",
-    version="0.9",
+    version=version,
     author="Huang Yan",
     author_email="hyansuper@foxmail.com",
     description="Simple wrapper over some python libs for image/audio detection/recognition etc",

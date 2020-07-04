@@ -11,8 +11,30 @@
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
 import os
+os.environ["BUILDING_RCUTE_AI_RTD"] = "1"
+
 import sys
 sys.path.insert(0, os.path.abspath('../../'))
+
+here = os.path.abspath(os.path.dirname(__file__))
+pkg_base_dir = os.path.join(here, '..', '..')
+
+with open(os.path.join(pkg_base_dir, 'rcute_ai', 'version.py')) as f:
+    ns = {}
+    exec(f.read(), ns)
+    version = ns['__version__']
+
+# generate api
+
+# modules = ['ObjectRecognizer', 'FaceRecognizer', 'QRCodeRecognizer', 'HotwordRecognizer', 'SpeechRecognizer']
+# with open(os.path.join(here, 'api', 'index.rst'), 'w') as f:
+#     f.write('API\n=================\n\n.. automodule:: rcute_ai\n\n.. toctree::\n\n')
+#     f.write('\n'.join([f'   {a}' for a in modules]))
+
+# for a in modules:
+#     with open(os.path.join(here, 'api', f'{a}.rst'), 'w') as f:
+#         title = f'rcute_ai.{a}\n'
+#         f.write(f'{title}{"="*len(title)}\n\n.. autoclass:: {title}   :members:\n')
 
 
 # -- Project information -----------------------------------------------------
@@ -22,17 +44,19 @@ copyright = '2020, Huang Yan'
 author = 'Huang Yan'
 
 # The full version, including alpha/beta/rc tags
-release = '0.9'
+release = version
 
+master_doc = 'index'
 
 # -- General configuration ---------------------------------------------------
 
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
-extensions = ['sphinx.ext.autodoc',
-    'sphinx_automodapi.automodapi',
-    'sphinx.ext.autosummary',]
+extensions = ['sphinx.ext.autodoc',]
+
+autodoc_member_order = 'bysource'
+autodoc_default_flags = ['members']
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -56,10 +80,9 @@ exclude_patterns = []
 # a list of builtin themes.
 #
 html_theme = 'sphinx_rtd_theme'
+pygments_style = 'sphinx'
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ['_static']
-
-autodoc_member_order = 'bysource'

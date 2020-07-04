@@ -1,27 +1,40 @@
 from rcute_ai import FaceRecognizer
 from rcute_cozmars import Robot
+import cv2
 
 # 新建一个人脸识别器
 rec = FaceRecognizer()
 
-# 让人脸器记住两人的样子
-rec.memorize('李雷', './lilei.jpg')
-rec.memorize('韩梅梅', './hanmeimei.jpg')
-
-with Robot(ip='192.168.1.102') as robot:
+# 把 IP 换成你的 Cozmars IP 地址
+with Robot('192.168.1.102') as robot:
     with robot.camera:
+
         for image in robot.camera.output_stream:
 
-            # # 识别图像中的人脸位置和人名
+            cv2.imshow('take a photo', image)
+            cv2.waitKey(1)
+
+            # 对着镜头，按下 Cozmars 的按钮拍张照片
+            if robot.button.pressed:
+                # 让人脸识别器记住你（“主人”）的样子
+                rec.memorize('主人', image)
+                break
+
+
+        # 开始人脸识别
+        for image in robot.camera.output_stream:
+
+            # 识别图像中的人脸位置和人名
             locations, names = rec.recognize(image)
 
-            # 将识别到的人脸信息（位置和名字）画到图上
+            # 把识别到的人脸信息（位置和名字）画到图上
             rec.draw_labels(image, locations, names)
 
             cv2.imshow('face recognition', image)
+            cv2.waitKey(1)
 
-            # 按下任何按键就退出
-            if cv2.waitKey(1) > 0:
+            # 长按 Cozmars 的按钮推出程序
+            if robot.button.held:
                 break
 
 cv2.destroyAllWindows()

@@ -1,24 +1,23 @@
 欢迎阅读 rcute-ai 的文档
 ========================
-introduction...
+
+.. automodule:: rcute_ai
+   :noindex:
+
+-----
 
 .. toctree::
-    :maxdepth: 2
-    :caption: 快速开始
+   :maxdepth: 2
 
-    examples
-
-.. toctree::
-    :maxdepth: 1
-    :caption: API
-
-    face_recognizer    
-    object_recognizer
+   installation
+   examples/index
+   api/index
 
 
-Indices and tables
-------------------
+欢迎提问或反馈bug到 https://github.com/hyansuper/rcute-ai/issues
 
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
+
+----------
+
+   * :ref:`search`
+   * :ref:`genindex`

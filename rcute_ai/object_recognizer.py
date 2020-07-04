@@ -1,13 +1,27 @@
-import cv2
-import numpy as np
 from . import util
+if not util.BUILDING_RTD:
+    import cv2
+    import numpy as np
+
 
 class ObjectRecognizer:
-    """yolov3 coco 物品识别器，能识别80种物品, 见 https://github.com/pjreddie/darknet/blob/master/data/coco.names
+    """ |yolov3| coco 物品识别器，能识别 |80种物品|
 
-    :param confidence_threshold: 默认是 `0.5`，用于 `cv2.dnn.NMSBoxes` 的参数
+    .. |yolov3| raw:: html
+
+       <a href='https://pjreddie.com/darknet/yolo/' target='blank'>yolov3</a>
+
+    .. |80种物品| raw:: html
+
+       <a href='https://github.com/pjreddie/darknet/blob/master/data/coco.names' target='blank'>80种物品</a>
+
+    .. |cv2.dnn.NMSBoxes| raw:: html
+
+       <a href='https://docs.opencv.org/master/d6/d0f/group__dnn.html#ga9d118d70a1659af729d01b10233213ee' target='blank'>cv2.dnn.NMSBoxes</a>
+
+    :param confidence_threshold: 默认是 `0.5`，用于 |cv2.dnn.NMSBoxes| 的参数
     :type confidence_threshold: float, optional
-    :param nms_threshold: 默认是 `0.3`，用于 `cv2.dnn.NMSBoxes` 的参数
+    :param nms_threshold: 默认是 `0.3`，用于 |cv2.dnn.NMSBoxes| 的参数
     :type nms_threshold: float, optional
     :param use_bgr: 要识别的图片是否是“BGR”色彩模式，默认是 `True` ，“BGR”是opencv默认的模式，设为 `False` 则表示使用“RGB”模式
     :type use_bgr: bool, optional
@@ -36,7 +50,9 @@ class ObjectRecognizer:
 
         :param img: 用来识别的图像
         :type img: numpy.ndarray
-        :return: 返回识别到的物品的位置数组和对应的物品名字数组，位置数组中的每个元素是一个 `tuple` ，包含物品中心的坐标和物品的宽和高： `(centerX, centerY, width, height)`
+        :return: 返回识别到的物品的位置数组和对应的物品名字数组
+
+            位置数组中的每个元素是一个 `tuple` ，包含物品中心的坐标和物品的宽和高： `(centerX, centerY, width, height)`
         :rtype: tuple
         """
         h, w = img.shape[:2]

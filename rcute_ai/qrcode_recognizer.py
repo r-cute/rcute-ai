@@ -1,4 +1,6 @@
+from . import util
 import cv2
+import numpy as np
 
 class QRCodeRecognizer(cv2.QRCodeDetector):
     """二维码识别器
@@ -25,10 +27,21 @@ class QRCodeRecognizer(cv2.QRCodeDetector):
         text, points = self.detectAndDecode(img)[:2]
         return (None, None) if points is None else (points.reshape(-1, 2).astype(int), text)
 
-    def draw_labels(self, img, points, text, color=(0,0,180)):
-        if not self._use_gbr:
-            r, g, b = color
-            color = b, g, r
-        font = cv2.FONT_HERSHEY_DUPLEX
-        cv2.putText(img, text, tuple(points[0]), font, 0.5, color, 1)
-        cv2.polylines(img, [points.reshape(-1, 1, 2)], 1, color)
+    def draw_labels(self, img, points, text, color=(0,0,180), text_color=(255,255,255)):
+        if points is not None:
+            if not self._use_gbr:
+                r, g, b = color
+                color = b, g, r
+                r, g, b = text_color
+                text_color = b, g, r
+            # font = cv2.FONT_HERSHEY_DUPLEX
+            # cv2.putText(img, text, tuple(points[0]), font, 0.5, color, 1)
+            cv2.polylines(img, [points.reshape(-1, 1, 2)], 1, color)
+            if text:
+                bx, by, bw, bh=cv2.boundingRect(points)
+                text_image = util.create_text_image(text, (bw, by))
+                centerX, centerY = bx+bw//2, by+bh//2
+                h, w = text_image.shape[:2]
+                x, y = centerX-w//2, centerY-h//2
+                x1, y1 = x+w, y+h
+                img[y:y1, x:x1] = (color*(1-text_image)+text_image*text_color).astype(np.uint8)

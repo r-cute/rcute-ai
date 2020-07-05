@@ -1,9 +1,9 @@
-from rcute_ai import FaceRecognizer
+import rcute_ai as ai
 from rcute_cozmars import Robot
 import cv2
 
 # 新建一个人脸识别器
-rec = FaceRecognizer()
+rec = ai.FaceRecognizer()
 
 # 把 IP 换成你的 Cozmars IP 地址
 with Robot('192.168.1.102') as robot:
@@ -11,8 +11,7 @@ with Robot('192.168.1.102') as robot:
 
         for image in robot.camera.output_stream:
 
-            cv2.imshow('take a photo', image)
-            cv2.waitKey(1)
+            ai.imshow('take a photo', image)
 
             # 对着镜头，按下 Cozmars 的按钮拍张照片
             if robot.button.pressed:
@@ -30,11 +29,10 @@ with Robot('192.168.1.102') as robot:
             # 把识别到的人脸信息（位置和名字）画到图上
             rec.draw_labels(image, locations, names)
 
-            cv2.imshow('face recognition', image)
-            cv2.waitKey(1)
+            ai.imshow('face recognition', image)
 
             # 长按 Cozmars 的按钮推出程序
             if robot.button.held:
                 break
 
-cv2.destroyAllWindows()
+ai.imclose()

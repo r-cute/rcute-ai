@@ -69,8 +69,8 @@ class ObjectRecognizer:
                 confidence = scores[class_id]
                 if confidence > self._confidence_threshold:
                     box = detection[0:4] * np.array([w, h, w, h])
-                    (centerX, centerY, width, height) = box.astype(int)
-                    boxes.append((centerX, centerY, width, height))
+                    (centerX, centerY, width, height) = box
+                    boxes.append((int(centerX), int(centerY), int(width), int(height)))
                     confidences.append(float(confidence))
                     class_ids.append(class_id)
         ret_boxes = []
@@ -108,7 +108,7 @@ class ObjectRecognizer:
             for (x, y, w, h), name in zip(locations, names):
                 x, y = x-w//2, y-h//2
                 cv2.rectangle(img, (x, y), (x+w, y+h), color, 1)
-                cv2.rectangle(img, (x, y), (x+len(name)*9, y+20), color, cv2.FILLED)
+                cv2.rectangle(img, (x, y), (x+len(name)*10, y+20), color, cv2.FILLED)
                 cv2.putText(img, name, (x, y+15), cv2.FONT_HERSHEY_SIMPLEX, 0.5, text_color, 1)
         else:
             for (x, y, w, h) in locations:

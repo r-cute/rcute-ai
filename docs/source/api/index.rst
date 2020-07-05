@@ -5,6 +5,7 @@ API
 
 .. toctree::
 
+   rcute_ai
    ObjectRecognizer
    FaceRecognizer
    QRCodeRecognizer

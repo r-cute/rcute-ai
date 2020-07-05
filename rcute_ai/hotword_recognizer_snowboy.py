@@ -33,7 +33,7 @@ class HotwordRecognizer:
                         hotword_model=None,
                         hotword=None,
                         sensitivity=.5,
-                        audio_gain=1):
+                        audio_gain=2):
 
         if not hotword_model:
             hotword_model = [util.resource(f'snowboy/hotword_models/{a}') for a in ['阿Q.pmdl']]
@@ -48,7 +48,7 @@ class HotwordRecognizer:
                 hotword = [hotword]
             assert len(hotword) == len(hotword_model), 'Number of hotword_model does not match number of hotword'
         self._hotwords = [w.split('/')[-1].split('.')[0] for w in hotword_model] if hotword is None else hotword
-        self._detect = snowboydetect.SnowboyDetect(restream_filename=util.resouce('snowboy/common.res').encode(), model_str=",".join(hotword_model).encode())
+        self._detect = snowboydetect.SnowboyDetect(resource_filename=util.resource('snowboy/common.res').encode(), model_str=",".join(hotword_model).encode())
         self._detect.SetAudioGain(audio_gain)
         self._detect.ApplyFrontend(False)
         self._detect.SetSensitivity(','.join([str(s) for s in sensitivity]).encode())
@@ -72,7 +72,7 @@ class HotwordRecognizer:
             if status == -1:
                 logger.warning("Error initializing streams or reading audio data")
             elif status > 0:
-                return self.hotwords[status-1]
+                return self._hotwords[status-1]
             elif timeout:
                 count += len(data) / 32000
                 if count > timeout:

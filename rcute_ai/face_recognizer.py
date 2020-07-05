@@ -3,7 +3,6 @@ from . import util
 if not util.BUILDING_RTD:
     import face_recognition
     import cv2
-    from PIL import Image, ImageFont, ImageDraw
     import numpy as np
 
 
@@ -33,14 +32,9 @@ class FaceRecognizer:
         self._face_names = []
         self._name_images = []
         self._use_bgr = use_bgr
-        self._font = ImageFont.truetype(util.resource("msyh.ttc"), 15)
-        self._unknown_name_image = self._create_name_image("陌生人")
+        self._unknown_name_image = util.create_text_image("陌生人")
 
-    def _create_name_image(self, name):
-        img = Image.new('RGB', (15*len(name), 20), 'black')
-        draw = ImageDraw.Draw(img)
-        draw.text((0,0), name, font=self._font, textColor=(255,255,255))
-        return np.asarray(img)/255
+
 
     def memorize(self, name, file_or_img):
         """记住某一个人的脸，若在后续的识别中看到这个人脸，就能得到他/她的名字
@@ -48,17 +42,22 @@ class FaceRecognizer:
         :param name: 要记住的人的名字
         :type name: str
         :param file_or_img: 要记住的人脸的样子，可以是图像文件的路径，也可以是图像数据本身（numpy三维数组）
-        :type file_or_img: Union[str, numpy.ndarray]
+        :type file_or_img: str / numpy.ndarray
+        :raises RuntimeError: 如果提供的图像中检测不到人脸，则抛出异常
         :raises AssertionError: 不能再次记住同一个人，否则抛出异常。若要“更新记忆”，先要“忘记”这个人，再从新“记住”
+
         """
-        assert self._face_names.get(name) == None, f'{name} is already in memory'
+        assert name not in self._face_names, f'{name} is already in memory'
         if isinstance(file_or_img, str):
             file_or_img = face_recognition.load_image_file(file_or_img)
         elif self._use_bgr:
             file_or_img = file_or_img[:, :, ::-1]
-        self._face_encodings.append(face_recognition.face_encodings(file_or_img)[0])
+        encodings = face_recognition.face_encodings(file_or_img)
+        if not encodings:
+            raise RuntimeError('No faces found in image')
+        self._face_encodings.append(encodings[0])
         self._face_names.append(name)
-        self._name_images.append(self._create_name_image(name))
+        self._name_images.append(util.create_text_image(name))
 
     def forget(self, name):
         """忘记某一个人的脸，即从记忆中删除对应的人脸信息
@@ -127,7 +126,7 @@ class FaceRecognizer:
         H, W = img.shape[:2]
         if names:
             for (x, y, w, h), name in zip(locations, names):
-                x, y = x-w//2, y-h//w
+                x, y = x-w//2, y-h//2
                 cv2.rectangle(img, (x, y), (x+w, y+h), color, 1)
                 try:
                     index = self._face_names.index(name)
@@ -143,8 +142,8 @@ class FaceRecognizer:
                 # img[sy:sy1, sx:sx1] = cv2.bitwise_or(img[sy:sy1, sx:sx1], name_image)
                 img[sy:sy1, sx:sx1] = (img[sy:sy1, sx:sx1]*(1-name_image)+name_image*text_color).astype(np.uint8)
         else:
-            for x, y, w, h in self.face_locations:
-                x, y = x-w//2, y-h//w
+            for x, y, w, h in locations:
+                x, y = x-w//2, y-h//2
                 cv2.rectangle(img, (x, y), (x+w, y+h), color, 1)
 
 

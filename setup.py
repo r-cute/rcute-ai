@@ -3,7 +3,7 @@ import os
 
 here = os.path.abspath(os.path.dirname(__file__))
 
-with open(os.path.join(here, 'rcute_cozmars', 'version.py')) as f:
+with open(os.path.join(here, 'rcute_ai', 'version.py')) as f:
     ns = {}
     exec(f.read(), ns)
     version = ns['__version__']

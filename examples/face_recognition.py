@@ -11,7 +11,7 @@ with Robot('192.168.1.102') as robot:
 
         for image in robot.camera.output_stream:
 
-            ai.imshow('take a photo', image)
+            ai.imshow(image)
 
             # 对着镜头，按下 Cozmars 的按钮拍张照片
             if robot.button.pressed:
@@ -29,7 +29,7 @@ with Robot('192.168.1.102') as robot:
             # 把识别到的人脸信息（位置和名字）画到图上
             rec.draw_labels(image, locations, names)
 
-            ai.imshow('face recognition', image)
+            ai.imshow(image)
 
             # 长按 Cozmars 的按钮推出程序
             if robot.button.held:

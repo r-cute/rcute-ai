@@ -17,7 +17,7 @@ with Robot('192.168.1.102') as robot:
             # 将识别到的二维码的信息画到图中
             rec.draw_labels(image, edges, text)
 
-            ai.imshow('QR code recognition', image)
+            ai.imshow(image)
 
             if robot.button.pressed:
                 break

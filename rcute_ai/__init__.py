@@ -16,40 +16,4 @@ from .speech_recognizer import SpeechRecognizer
 
 from .version import __version__
 
-from . import util
-if not util.BUILDING_RTD:
-    import cv2
-
-def imshow(img, win='', wait=1):
-    """显示图像
-
-    .. code:: python
-
-        rcute_ai.imshow(img)
-
-    等同于：
-
-    .. code:: python
-
-        cv2.imshow('', img)
-        cv2.waitKey(1)
-
-
-    :param img: 要显示的图像
-    :type img: numpy.ndarray
-    :param win: 图像窗口的名字
-    :type win: str
-    :param wait: `cv2.waitKey()`的参数，默认是 `1`
-    :type wait: int
-    """
-    cv2.imshow(win, img)
-    cv2.waitKey(wait)
-
-def imclose(win=None):
-    '''关闭图像窗口
-
-    :param win: 要关闭的图像窗口的名字，默认是 `None`，表示关闭所有图形窗口
-    :type win: str
-    '''
-    cv2.destroyWindow(win) if win else cv2.destroyAllWindows()
-
+from .util import imshow, imclose

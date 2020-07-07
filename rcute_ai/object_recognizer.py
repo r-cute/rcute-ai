@@ -56,7 +56,7 @@ class ObjectRecognizer:
         :rtype: tuple
         """
         h, w = img.shape[:2]
-        blob = cv2.dnn.blobFromImage(img, 1 / 255.0, (320, 320), swapRB=self._use_bgr, crop=False)
+        blob = cv2.dnn.blobFromImage(img, 1 / 255.0, (320, 240), swapRB=self._use_bgr, crop=False)
         self._net.setInput(blob)
         outs = self._net.forward(self._layer_names)
         boxes = []

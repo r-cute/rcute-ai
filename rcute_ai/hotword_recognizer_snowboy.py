@@ -53,10 +53,10 @@ class HotwordRecognizer:
         self._detect.ApplyFrontend(False)
         self._detect.SetSensitivity(','.join([str(s) for s in sensitivity]).encode())
 
-    def recognize(self, stream, timeout=None):
+    def recognize(self, source, timeout=None):
         """开始识别
 
-        :param stream: 音频数据流
+        :param source: 声音来源
         :param timeout: 超时，即识别的最长时间（秒），默认为 `None` ，表示不设置超时，知道识别到热词才返回
         :type timeout: float, optional
         :return: 识别到的热词模型对应的热词，若超时没识别到热词则返回 `None`
@@ -65,7 +65,8 @@ class HotwordRecognizer:
         self._cancel = False
         if timeout:
             count = 0.0
-        for data in stream:
+        while True:
+            data = source.raw_read()
             if self._cancel:
                 raise Exception('Hotword detection cancelled by another thread')
             status = self._detect.RunDetection(data)
@@ -74,7 +75,7 @@ class HotwordRecognizer:
             elif status > 0:
                 return self._hotwords[status-1]
             elif timeout:
-                count += len(data) / 32000
+                count += source.frame_time #len(data) / 32000
                 if count > timeout:
                     return
 

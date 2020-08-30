@@ -1,5 +1,5 @@
 rcute_ai
-==========
+==========================
 
 .. autofunction:: rcute_ai.imshow
 

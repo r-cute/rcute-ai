@@ -54,7 +54,7 @@ class FaceRecognizer:
             file_or_img = file_or_img[:, :, ::-1]
         encodings = face_recognition.face_encodings(file_or_img)
         if not encodings:
-            raise RuntimeError('No faces found in image')
+            raise RuntimeError('No face found in image')
         self._face_encodings.append(encodings[0])
         self._face_names.append(name)
         self._name_images.append(util.create_text_image(name))

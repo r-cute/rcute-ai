@@ -26,18 +26,18 @@ if not BUILDING_RTD:
 def create_text_image(text, area=None):
     if area:
         w, h = area
-        char_per_line = min(w//15, len(text))
-        lines = min(math.floor(h/20), math.ceil(len(text)/char_per_line))
+        char_per_line = min(w//9, len(text))
+        lines = max(1, min(math.floor(h/20), math.ceil(len(text)/char_per_line)))
     else:
         char_per_line = len(text)
         lines = 1
-    img = Image.new('RGB', (15*char_per_line, 20*lines), 'black')
+    img = Image.new('RGB', (9*char_per_line, 20*lines), 'black')
     draw = ImageDraw.Draw(img)
     ind = 0
     for i in range(lines):
         draw.text((0,20*i), text[ind:ind+char_per_line], font=_font, textColor=(255,255,255))
         ind += char_per_line
-    return np.asarray(img)/255
+    return np.divide(np.asarray(img), 255)
 
 def imshow(img, win='', wait=1):
     """显示图像

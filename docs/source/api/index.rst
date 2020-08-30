@@ -11,4 +11,3 @@ API
    QRCodeRecognizer
    HotwordRecognizer
    SpeechRecognizer
-   util

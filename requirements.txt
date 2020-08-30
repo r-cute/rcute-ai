@@ -4,7 +4,9 @@ opencv-python
 Pillow
 qrcode
 pyaudio
+pydub
 vosk
+# pocketsphinx
 
 # install pyaudio from source:
 # git clone https://people.csail.mit.edu/hubert/git/pyaudio.git; cd pyaudio; python setup.py install

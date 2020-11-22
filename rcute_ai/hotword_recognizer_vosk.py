@@ -1,4 +1,5 @@
 from . import util
+import json
 if not util.BUILDING_RTD:
     from vosk import Model, KaldiRecognizer
 
@@ -36,17 +37,17 @@ class HotwordRecognizer:
         if timeout:
             count = 0.0
         while True:
-            data = stream.raw_read()
+            data = stream.read()
             if self._rec.AcceptWaveform(data):
-                return self._process_result(self._rec.Result()['text'])
+                p= self._process_result(json.loads(self._rec.Result())['text'])
             else:
-                p = self._process_result(self._rec.PartialResult()['partial'])
-                if p:
-                    return p
+                p = self._process_result(json.loads(self._rec.PartialResult())['partial'])
+            if p:
+                return p
             if self._cancel:
                 raise RuntimeError('Hotword detection cancelled by another thread')
             elif timeout:
-                count += source.frame_duration #len(data) / 32000
+                count += len(data) / 32000#source.frame_duration #
                 if count > timeout:
                     return# self._process_result(self._rec.FinalResult()['text'])
 

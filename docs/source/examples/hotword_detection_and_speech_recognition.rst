@@ -29,12 +29,12 @@
         robot.microphone.volumn = 100
 
         # 打开麦克风
-        with robot.microphone as mic:
+        with robot.microphone.get_buffer() as mic_buf:
 
             while True:
 
                 # 通过 Cozmars 的麦克风进行热词识别，设置 10 秒的超时
-                text = hotword_rec.recognize(mic, timeout=10)
+                text = hotword_rec.recognize(mic_buf, timeout=10)
 
                 # 如果识别到热词，就发出“嘟”的一声提示音符，并把热词打印出来
                 if text:
@@ -66,20 +66,20 @@
     # 新建一个语音识别器，默认语言是中文
     speech_rec = ai.SpeechRecognizer()
 
-    # 把 IP 换成你的 Cozmars IP 地址
+    # 把 IP 换成你的 Cozmars IP 地址 或 序列号
     with Robot('192.168.1.102') as robot:
 
-        with robot.microphone as mic:
+        with robot.microphone.get_buffer() as mic_buf:
 
             while True:
 
                 # 先进行热词检测，不设置超时，直到识别到热词该函数才返回
-                hotword_rec.recognize(mic)
+                hotword_rec.recognize(mic_buf)
                 # 识别到热词后发出“嘟”的一声提示音符
                 robot.buzzer.set_tone('C4', .2)
 
                 # 开始语音识别并返回识别到的文字
-                text = speech_rec.recognize(mic)
+                text = speech_rec.recognize(mic_buf)
                 print(text)
 
                 if text == '前进':

@@ -21,16 +21,16 @@
     # 新建一个物体识别器
     rec = ai.ObjectRecognizer()
 
-    # 把 IP 换成你的 Cozmars IP 地址，连接 机器人
+    # 把 IP 换成你的 Cozmars IP 地址 或 序列号
     with Robot('192.168.1.102') as robot:
 
         # 如果物体识别比较消耗 CPU, 我们可以降低摄像头帧率:
         robot.camera.frame_rate = 1
 
         # 打开摄像头
-        with robot.camera:
+        with robot.camera.get_buffer() as cam_buf:
 
-            for image in robot.camera:
+            for image in cam_buf:
 
                 # 识别图像中的物体位置和物体名称
                 locations, names = rec.recognize(image)

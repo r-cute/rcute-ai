@@ -9,11 +9,11 @@
     # 新建一个二维码识别器
     rec = ai.QRCodeRecognizer()
 
-    # 把 IP 换成你的 Cozmars IP 地址
+    # 把 IP 换成你的 Cozmars IP 地址 或 序列号
     with Robot('192.168.1.102') as robot:
 
-        with robot.camera:
-            for image in robot.camera:
+        with robot.camera.get_buffer() as cam_buf:
+            for image in cam_buf:
 
                 # 识别图像中的二维码位置和信息
                 points, text = rec.recognize(image)

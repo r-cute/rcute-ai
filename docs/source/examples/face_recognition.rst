@@ -9,11 +9,11 @@
     # 新建一个人脸识别器
     rec = ai.FaceRecognizer()
 
-    # 把 IP 换成你的 Cozmars IP 地址
+    # 把 IP 换成你的 Cozmars IP 地址 或 序列号
     with Robot('192.168.1.102') as robot:
-        with robot.camera:
+        with robot.camera.get_buffer() as cam_buf:
 
-            for image in robot.camera:
+            for image in cam_buf:
                 ai.imshow(image)
 
                 # 对着镜头，按下 Cozmars 的按钮拍张照片
@@ -23,7 +23,7 @@
                     break
 
 
-            for image in robot.camera:
+            for image in cam_buf:
 
                 # 识别图像中的人脸位置和人名
                 locations, names = rec.recognize(image)

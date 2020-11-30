@@ -49,7 +49,7 @@ class SpeechRecognizer:
         self._cancel = False
         recognition_count = silence_count = 0.0
         while True:
-            data = source.raw_read()
+            data = source.read()
             if self._cancel:
                 raise Exception('Speech recognition cancelled by another thread')
 

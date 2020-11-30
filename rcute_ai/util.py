@@ -6,6 +6,13 @@ if not BUILDING_RTD:
     import numpy as np
     import math
     import cv2
+    import colorzero
+
+def bgr(color):
+    if isinstance(color, str):
+        return colorzero.Color(color).rgb_bytes[::-1]
+    else:
+        return color
 
 RESOURCES = path.join(path.dirname(__file__), '../resources')
 def resource(file):
@@ -23,6 +30,7 @@ logger = logging.getLogger('rcute-ai')
 if not BUILDING_RTD:
     _font = ImageFont.truetype(resource("msyh.ttc"), 15)
 
+'''
 def create_text_image(text, area=None):
     if area:
         w, h = area
@@ -37,6 +45,12 @@ def create_text_image(text, area=None):
     for i in range(lines):
         draw.text((0,20*i), text[ind:ind+char_per_line], font=_font, textColor=(255,255,255))
         ind += char_per_line
+    return np.divide(np.asarray(img), 255)
+'''
+def create_text_image(text):
+    img = Image.new('RGB', _font.getsize(text), 'black')
+    draw = ImageDraw.Draw(img)
+    draw.text((0,0), text, font=_font, textColor='white')
     return np.divide(np.asarray(img), 255)
 
 def imshow(img, win='', wait=1):

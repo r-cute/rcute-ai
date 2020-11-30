@@ -1,7 +1,8 @@
-face_recognition
-numpy
 opencv-python
+numpy
+colorzero
 Pillow
+face_recognition
 qrcode
 pyaudio
 pydub

@@ -15,8 +15,8 @@ class HotwordRecognizer:
     """
 
     def __init__(self, hotwordlang='en'):
-        model = Model(util.resource("sphinx/vosk-model-small-en-us-0.3"))
-        self._rec = KaldiRecognizer(model, 16000,  'a b c d e f g h i j k l m n o p q r s t u v w x y z cute')
+        model = Model(util.resource("sphinx/vosk-model-en-us-daanzu-20200328-lgraph"))
+        self._rec = KaldiRecognizer(model, 16000,  '["a b c d e f g h i j k l m n o p q r s t u v w x y z cute"]')
 
     def _process_result(self, text):
         if text == 'r q':
@@ -24,7 +24,7 @@ class HotwordRecognizer:
         elif text == 'r cute':
             return 'R-cute'
 
-    def recognize(self, stream, timeout=None):
+    def recognize(self, source, timeout=None):
         """开始识别
 
         :param source: 声音来源
@@ -37,17 +37,17 @@ class HotwordRecognizer:
         if timeout:
             count = 0.0
         while True:
-            data = stream.read()
+            data = source.read()
             if self._rec.AcceptWaveform(data):
                 p= self._process_result(json.loads(self._rec.Result())['text'])
             else:
-                p = self._process_result(json.loads(self._rec.PartialResult())['partial'])
+                p= self._process_result(json.loads(self._rec.PartialResult())['partial'])
             if p:
                 return p
             if self._cancel:
                 raise RuntimeError('Hotword detection cancelled by another thread')
             elif timeout:
-                count += len(data) / 32000#source.frame_duration #
+                count += source.frame_duration
                 if count > timeout:
                     return# self._process_result(self._rec.FinalResult()['text'])
 

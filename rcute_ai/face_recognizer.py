@@ -96,7 +96,7 @@ class FaceRecognizer:
         for encoding in face_recognition.face_encodings(img, locations):
             matches = face_recognition.compare_faces(self._face_encodings, encoding)
             face_distances = face_recognition.face_distance(self._face_encodings, encoding)
-            if face_distances:
+            if face_distances is not None:
                 best_match_index = np.argmin(face_distances)
                 name = self._face_names[best_match_index] if matches[best_match_index] else None
             else:
@@ -104,7 +104,7 @@ class FaceRecognizer:
             names.append(name)
         return ret_locations, names
 
-    def draw_labels(self, img, locations, names=None, color=(0,0,180), text_color=(255,255,255)):
+    def draw_labels(self, img, locations, names=None, color='red', text_color='white'):
         """在图像中框出人脸，并标记上对应的名字
 
         :param img: 要标记的图像，应该是被 :func:`recognize` 识别过的同一个图像
@@ -113,11 +113,13 @@ class FaceRecognizer:
         :type locations: list
         :param names: 与位置数组对应的名字数组，默认是 `None` ，表示不标注名字
         :type names: list, optional
-        :param color: 方框的颜色，默认是BGR= `(0,0,180)` 的红色
+        :param color: 方框的颜色，默认是红色
         :type color: tuple, optional
-        :param text_color: 名字的颜色，默认是白色 `(255,255,255)`
+        :param text_color: 名字的颜色，默认是白色
         :type text_color: tuple, optional
         """
+        color = util.bgr(color)
+        text_color = util.bgr(text_color)
         if not self._use_bgr:
             r, g, b = color
             color = b, g, r
@@ -126,8 +128,8 @@ class FaceRecognizer:
         H, W = img.shape[:2]
         if names:
             for (x, y, w, h), name in zip(locations, names):
-                x, y = x-w//2, y-h//2
-                cv2.rectangle(img, (x, y), (x+w, y+h), color, 1)
+                x, y = x-w//2, y+h//2
+                cv2.rectangle(img, (x, y-h), (x+w, y), color, 1)
                 try:
                     index = self._face_names.index(name)
                 except ValueError:
@@ -135,7 +137,7 @@ class FaceRecognizer:
                 else:
                     name_image = self._name_images[index]
                 nh, nw = name_image.shape[:2]
-                sy, sy1, sx, sx1 = min(H, y), min(H, y+20), min(W, x), min(W, x+nw)
+                sy, sy1, sx, sx1 = min(H, y-nh), min(H, y), min(W, x), min(W, x+nw)
                 cv2.rectangle(img, (x, sy), (sx1, sy1), color, cv2.FILLED)
                 # font = cv2.FONT_HERSHEY_DUPLEX
                 # cv2.putText(img, name if name else 'Unknown', (x+6, y1-6), font, 0.5, (255, 255, 255), 1)
@@ -143,8 +145,8 @@ class FaceRecognizer:
                 img[sy:sy1, sx:sx1] = (img[sy:sy1, sx:sx1]*(1-name_image)+name_image*text_color).astype(np.uint8)
         else:
             for x, y, w, h in locations:
-                x, y = x-w//2, y-h//2
-                cv2.rectangle(img, (x, y), (x+w, y+h), color, 1)
+                x, y = x-w//2, y+h//2
+                cv2.rectangle(img, (x, y-h), (x+w, y), color, 1)
 
 
 

@@ -1,5 +1,5 @@
 """
-rcute-ai 是对一些图像/语音识别 Python 库的简单封装，使用简单，用来辅助 R-cute 机器人（如 |Cozmars| ）进行图像/语音识别等一些高级功能
+`rcute-ai` 是对一些图像/语音识别 Python 库的简单封装，用来辅助 R-Cute 机器人（如 |Cozmars| ）进行图像/语音识别等一些高级功能
 
 .. |Cozmars| raw:: html
 

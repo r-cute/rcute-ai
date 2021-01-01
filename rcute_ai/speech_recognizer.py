@@ -28,7 +28,7 @@ class SpeechRecognizer:
         # self._detect.SetSensitivity('0.5'.encode())
 
 
-    def recognize(self, source, timeout=10, silence_timeout=2, silence_rms_threshold=500):
+    def recognize(self, source, timeout=10, silence_timeout=2, silence_threshold=-35):
         """开始识别
 
         :param source: 声音来源
@@ -36,37 +36,37 @@ class SpeechRecognizer:
         :type timeout: float, optinal
         :param silence_timeout: 停顿超时（秒），超过这个时间没有说话则表示已经说完，默认为 `2`，设为 `None` 则表示不设置停顿超时
         :type silence_timeout: float, optinal
-        :param silence_rms_threshold: 停顿音量的阈值，当音量小于这个阈值则认为没有说话，默认为 `500`。见 |pydub.AudioSegment(…).rms|
+        :param silence_threshold: 停顿音量的阈值，当音量小于这个阈值则认为没有说话，默认为 `-35` (dBFS)。见 |pydub.AudioSegment(…).dBFS|
         :type silence_rms_threshold: int, optinal
         :return: 识别到的短语或句子
         :rtype: str
 
-        .. |pydub.AudioSegment(…).rms| raw:: html
+        .. |pydub.AudioSegment(…).dBFS| raw:: html
 
-            <a href='https://github.com/jiaaro/pydub/blob/master/API.markdown#audiosegmentrms' target='blank'>pydub.AudioSegment(…).rms</a>
+            <a href='https://github.com/jiaaro/pydub/blob/master/API.markdown#audiosegmentdbfs' target='blank'>pydub.AudioSegment(…).dBFS</a>
 
         """
         self._cancel = False
         recognition_count = silence_count = 0.0
         while True:
-            data = source.read()
+            segment = source.read()
             if self._cancel:
                 raise Exception('Speech recognition cancelled by another thread')
 
-            if self._rec.AcceptWaveform(data):
+            if self._rec.AcceptWaveform(segment.raw_data):
                 text = self._rec.Result()
                 break
 
-            # ln = len(data) / 32000 # 1 second = 16000(samplerate) * 2 bytes_per_sample
-            recognition_count += source.frame_duration
+            seg_duration = segment.duration_seconds
+            recognition_count += seg_duration
             if timeout and recognition_count > timeout:
                 text = self._rec.FinalResult()
                 break
             # voice activity detection:
             # if self._detect.RunDetection(data) == -2: # silence
             if silence_timeout:
-                if AudioSegment(data=data, sample_width=source.sample_width, frame_rate=source.sample_rate, channels=source.channels).rms < silence_rms_threshold:
-                    silence_count += source.frame_duration
+                if segment.dBFS < silence_threshold:
+                    silence_count += seg_duration
                     if silence_count > silence_timeout:
                         text = self._rec.FinalResult()
                         break

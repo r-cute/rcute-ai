@@ -1,0 +1,3 @@
+recursive-include rcute_ai/resources/sphinx *
+recursive-include rcute_ai/resources/yolov3 *
+include rcute_ai/msyh.ttc

@@ -121,10 +121,8 @@ class FaceRecognizer:
         color = util.bgr(color)
         text_color = util.bgr(text_color)
         if not self._use_bgr:
-            r, g, b = color
-            color = b, g, r
-            r, g, b = text_color
-            text_color = b, g, r
+            color = color[::-1]
+            text_color = text_color[::-1]
         H, W = img.shape[:2]
         if names:
             for (x, y, w, h), name in zip(locations, names):

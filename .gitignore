@@ -6,4 +6,5 @@ dist/
 test*.py
 rcute_ai/*.png
 rcute_ai/*.jpg
-resources/*
+rcute_ai/resources/*
+*.png

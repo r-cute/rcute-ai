@@ -26,6 +26,7 @@ setuptools.setup(
     url="https://github.com/hyansuper/rcute-ai",
     packages=['rcute_ai'],
     install_requires=requirements,
+    include_package_data=True,
     classifiers=(
         "Programming Language :: Python :: 3.8",
         "License :: OSI Approved :: MIT License",

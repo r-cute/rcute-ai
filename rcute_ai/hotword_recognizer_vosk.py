@@ -16,13 +16,13 @@ class HotwordRecognizer:
 
     def __init__(self, hotwordlang='en'):
         model = Model(util.resource("sphinx/vosk-model-en-us-daanzu-20200328-lgraph"))
-        self._rec = KaldiRecognizer(model, 16000,  '["a b c d e f g h i j k l m n o p q r s t u v w x y z cute"]')
+        self._rec = KaldiRecognizer(model, 16000,  '["a b c d e f g h i j k l m n o p q r s t u v w x y z ask arc cute"]')
 
     def _process_result(self, text):
         if text == 'r q':
             return '阿Q'
         elif text == 'r cute':
-            return 'R-cute'
+            return 'R-Cute'
 
     def recognize(self, source, timeout=None):
         """开始识别
@@ -37,8 +37,8 @@ class HotwordRecognizer:
         if timeout:
             count = 0.0
         while True:
-            data = source.read()
-            if self._rec.AcceptWaveform(data):
+            segment = source.read()
+            if self._rec.AcceptWaveform(segment.raw_data):
                 p= self._process_result(json.loads(self._rec.Result())['text'])
             else:
                 p= self._process_result(json.loads(self._rec.PartialResult())['partial'])

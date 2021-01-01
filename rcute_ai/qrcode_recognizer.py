@@ -68,10 +68,8 @@ class QRCodeRecognizer(cv2.QRCodeDetector):
         """
         if points is not None:
             if not self._use_bgr:
-                r, g, b = color
-                color = b, g, r
-                r, g, b = text_color
-                text_color = b, g, r
+                color = color[::-1]
+                text_color = text_color[::-1]
             # font = cv2.FONT_HERSHEY_DUPLEX
             # cv2.putText(img, text, tuple(points[0]), font, 0.5, color, 1)
             cv2.polylines(img, [points.reshape(-1, 1, 2)], 1, color)
@@ -82,7 +80,4 @@ class QRCodeRecognizer(cv2.QRCodeDetector):
                 h, w = text_image.shape[:2]
                 x, y = centerX-w//2, centerY-h//2
                 x1, y1 = x+w, y+h
-                try:
-                    img[y:y1, x:x1] = (color*(1-text_image)+text_image*text_color).astype(np.uint8)
-                except Exception:
-                    pass
+                img[y:y1, x:x1] = (color*(1-text_image)+text_image*text_color).astype(np.uint8)

@@ -2,19 +2,18 @@ from os import path, listdir, environ
 
 BUILDING_RTD = environ.get("RCUTE_AI_RTD") == "1"
 if not BUILDING_RTD:
-    from PIL import Image, ImageFont, ImageDraw
+    from PIL import Image, ImageFont, ImageDraw, ImageColor
     import numpy as np
     import math
     import cv2
-    import colorzero
 
 def bgr(color):
     if isinstance(color, str):
-        return colorzero.Color(color).rgb_bytes[::-1]
+        return ImageColor.getrgb(color)[::-1]
     else:
         return color
 
-RESOURCES = path.join(path.dirname(__file__), '../resources')
+RESOURCES = path.join(path.dirname(__file__), 'resources')
 def resource(file):
     return path.join(RESOURCES, file)
 
@@ -47,7 +46,22 @@ def create_text_image(text, area=None):
         ind += char_per_line
     return np.divide(np.asarray(img), 255)
 '''
-def create_text_image(text):
+def visible_text(text, area):
+    w, h = _font.getsize(text)
+    aw, ah = area
+    if h <= ah and w <= aw:
+        return text
+    elif h > ah:
+        return ''
+    else:
+        text = text[:-1]
+        while text and _font.getsize(text + '...')[0] > aw:
+            text = text[:-1]
+        return text + '...'
+
+def create_text_image(text, area=None):
+    if area:
+        text = visible_text(text, area)
     img = Image.new('RGB', _font.getsize(text), 'black')
     draw = ImageDraw.Draw(img)
     draw.text((0,0), text, font=_font, textColor='white')

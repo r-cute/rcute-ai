@@ -16,7 +16,7 @@ class HotwordRecognizer:
 
     def __init__(self, hotwordlang='en'):
         model = Model(util.resource("sphinx/vosk-model-en-us-daanzu-20200328-lgraph"))
-        self._rec = KaldiRecognizer(model, 16000,  '["a b c d e f g h i j k l m n o p q r s t u v w x y z ask arc cute"]')
+        self._rec = KaldiRecognizer(model, 16000,  '[ "r cute", "[unk]" ]')
 
     def _process_result(self, text):
         if text == 'r q':

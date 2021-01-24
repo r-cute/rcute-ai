@@ -13,6 +13,7 @@ from .object_recognizer import ObjectRecognizer
 from .qrcode_recognizer import QRCodeRecognizer
 from .hotword_recognizer_vosk import HotwordRecognizer
 from .speech_recognizer import SpeechRecognizer
+from .tts import TTS
 
 from .version import __version__
 

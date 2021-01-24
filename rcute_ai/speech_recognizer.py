@@ -28,13 +28,13 @@ class SpeechRecognizer:
         # self._detect.SetSensitivity('0.5'.encode())
 
 
-    def recognize(self, source, timeout=10, silence_timeout=2, silence_threshold=-35):
+    def recognize(self, source, timeout=None, silence_timeout=None, silence_threshold=-35):
         """开始识别
 
         :param source: 声音来源
-        :param timeout: 超时，即最长的识别时间（秒），默认为 `10`，设为 `None` 则表示不设置超时
+        :param timeout: 超时，即最长的识别时间（秒），默认为 `None` 则表示不设置超时
         :type timeout: float, optinal
-        :param silence_timeout: 停顿超时（秒），超过这个时间没有说话则表示已经说完，默认为 `2`，设为 `None` 则表示不设置停顿超时
+        :param silence_timeout: 停顿超时（秒），超过这个时间没有说话则表示已经说完，默认为 `None` 则表示不设置停顿超时
         :type silence_timeout: float, optinal
         :param silence_threshold: 停顿音量的阈值，当音量小于这个阈值则认为没有说话，默认为 `-35` (dBFS)。见 |pydub.AudioSegment(…).dBFS|
         :type silence_rms_threshold: int, optinal

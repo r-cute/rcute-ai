@@ -1,71 +1,41 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
-#
-# Copyright 2017 Guenter Bartsch
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-#
-
-'''
-copy and modified from gitHub.com/gooofy/py-espeak-ng
-'''
-import logging
+# modified from github.com/gooofy/py-espeak-ng
+import re
 import subprocess
 import tempfile
+from . import util
+if not util.BUILDING_RTD:
+    from pyttsx3.voice import Voice
 
-class ESpeakNG(object):
+def lang_detect(txt):
+    return 'zh' if re.findall(r'[\u4e00-\u9fff]+', txt) else 'en'
 
-    def __init__(self,
-                 volume      =         100,
-                 audio_dev   =        None,
-                 word_gap    =          -1, # ms
-                 capitals    =           0, # indicate capital letters with: 1=sound, 2=the word "capitals", higher values indicate a pitch increase (try -k20).
-                 line_length =           0, # Line length. If not zero, consider lines less than this length as end-of-clause
-                 pitch       =          50, # 0-99
-                 speed       =         175, # approx. words per minute
-                 voice       = 'en'):
+class TTS:
+    """text to speech"""
 
+    def __init__(self):
+        self.default_settings= {'b': 1}
+        """ voice/volume/pitch/speed etc. See `espeak <http://espeak.sourceforge.net/commands.html>`_ command options section"""
+        self._cmd_param_map= {'voice':'v', 'lang':'v',
+                                'volume': 'a',
+                                'capitals': 'k',
+                                'line_length': 'l',
+                                'pitch': 'p',
+                                'speed': 's',
+                                'word_gap': 'g'}
 
-        self._volume      = volume
-        self._audio_dev   = audio_dev
-        self._word_gap    = word_gap
-        self._capitals    = capitals
-        self._line_length = line_length
-        self._pitch       = pitch
-        self._speed       = speed
-        self._voice       = voice
+    def _normalize_cmd_param(self, txt, options):
+        op = {self._cmd_param_map.get(k,k):str(v) for k,v in self.default_settings.items()}
+        op.update({self._cmd_param_map.get(k,k):str(v) for k,v in options.items()})
+        if not op.get('v'):
+            op['v'] = lang_detect(txt)
+        gd = op.pop('gender', None)
+        if gd:
+            op['v'] = op['v'].split('+')[0] + '+'+ gd.lower()+ ('1' if len(gd)==1 else '')
+        return {('-'if len(k)==1 else '--')+k:v for k,v in op.items()}
 
-    def _espeak_exe(self, args, sync=False):
-        cmd = ['espeak',
-               '-a', str(self._volume),
-               '-k', str(self._capitals),
-               '-l', str(self._line_length),
-               '-p', str(self._pitch),
-               '-s', str(self._speed),
-               '-v', self._voice,
-               '-b', '1', # UTF8 text encoding
-               ]
-
-        if self._word_gap>=0:
-            cmd.extend(['-g', str(self._word_gap)])
-
-        cmd.extend(args)
-
-        logging.debug('espeakng: executing %s' % repr(cmd))
-
-        # '-w', f.name, s
-
+    def _exe(self, cmd, sync=False):
+        print(' '.join(cmd))
+        # logging.debug ('espeak cmd: '+ ' '.join(cmd))
         p = subprocess.Popen(cmd,
                              stdout=subprocess.PIPE,
                              stderr=subprocess.STDOUT)
@@ -92,166 +62,85 @@ class ESpeakNG(object):
 
         return res2
 
-    def say(self, txt, sync=False):
+    def say(self, txt, **options):
+        """speak text
 
-        txte = txt.encode('utf8')
+        :param txt: text to be said
+        :type txt: str
+        :param options: if not set, :data:`default_settings` is used.
+            * voice/lang: if not set, English is the default unless Chinese characters are detected in :data:`txt`
+            * volume
+            * pitch
+            * speed
+            * word_gap
 
-        args = []
+            See `espeak <http://espeak.sourceforge.net/commands.html>`_ command options section
+        :type options: optional
+        """
+        op = self._normalize_cmd_param(txt, options)
+        cmd = ['espeak', txt.encode('utf8')]
+        cmd.extend(sum(op.items(),()))
+        return self._exe(cmd, sync=False)
 
-        if self._audio_dev:
-            args.extend(['-d', self._audio_dev])
+    def tts_wav(self, txt, file=None, **options):
+        """return tts wav or save it to file
 
-        args.append(txte)
+        :param txt: text to be said
+        :type txt: str
+        :param file: path for tts wav data to be saved at, default to None
+        :type txt: str, optional
+        :param options: if not set, :data:`default_settings` is used.
+            * voice/lang: if not set, English is the default unless Chinese characters are detected in :data:`txt`
+            * volume
+            * pitch
+            * speed
+            * word_gap
 
-        return self._espeak_exe(args, sync=sync)
-
-    def synth_wav(self, txt, file=None, fmt='txt'):
-
-        wav = None
+            See `espeak <http://espeak.sourceforge.net/commands.html>`_ command options section
+        :type options: optional
+        :return: wav data if :data:`file` is not specified
+        :rtype: bytes or None
+        """
+        # if fmt == 'xs':
+        #     txt = '[[' + txt + ']]'
+        # elif fmt != 'txt':
+        #     raise Exception ('unknown format: %s' % fmt)
 
         with (open(file, 'w') if file else tempfile.NamedTemporaryFile()) as f:
-
-
-            if fmt == 'xs':
-                txt = '[[' + txt + ']]'
-            elif fmt != 'txt':
-                raise Exception ('unknown format: %s' % fmt)
-
-            txte = txt.encode('utf8')
-
-            args = ['-w', f.name, txte]
-
-            self._espeak_exe(args, sync=True)
-
+            op = self._normalize_cmd_param(txt, options)
+            cmd = ['espeak', txt.encode('utf8'), '-w', f.name]
+            cmd.extend(sum(op.items(),()))
+            self._exe(cmd, sync=True)
             if file:
                 return
-
             f.seek(0)
-            wav = f.read()
-
-            logging.debug('read %s, got %d bytes.' % (f.name, len(wav)))
-
-        return wav
-
-    def g2p(self, txt, ipa=None, tie=None):
-
-        args = ['-q']
-
-        if ipa:
-            args.append('--ipa=%s' % ipa)
-        else:
-            args.append('-x')
-
-        if tie:
-            args.append('--tie=%s' % tie)
-
-        args.append(txt)
-
-        phonemes = u''
-
-        for line in self._espeak_exe(args, sync=True):
-
-            logging.debug(u'line: %s' % repr(line))
-
-            phonemes += line.decode('utf8').strip()
-
-        return phonemes
+            return f.read()
 
     @property
     def voices(self):
-
-        res = self._espeak_exe(['--voices'], sync=True)
-
-        logging.debug ('espeakng: voices: %s' % res)
-
-        # ['Pty', 'Language', 'Age/Gender', 'VoiceName', 'File', 'Other', 'Languages']
-
+        """return installed voices
+        """
+        res = self._exe('espeak --voices'.split(), sync=True)
         voices = []
-
-        first = True
-        for v in res:
-            if first:
-                first=False
-                continue
+        gd ={'M':'male', 'F':'female'}
+        for i,v in enumerate(res[1:]):
             parts = v.decode('utf8').split()
 
             if len(parts)<5:
                 continue
 
             age_parts = parts[2].split('/')
-            if len(age_parts) != 2:
-                continue
 
-            voice = {
-                        'pty'        : parts[0],
-                        'language'   : parts[1],
-                        'age'        : age_parts[0],
-                        'gender'     : age_parts[1],
-                        'voice_name' : parts[3],
-                        'file'       : parts[4],
-                    }
+            voice = Voice(id=i,
+                        # 'pty'        : parts[0],
+                        languages  = [parts[1]],
+                        age        = None if len(age_parts)==1 else age_parts[-2],
+                        gender     = gd.get(age_parts[-1], age_parts[-1]),
+                        name = parts[3],
+                        # 'file'       : parts[4],
+                    )
 
-            logging.debug ('espeakng: voices: parts= %s %s -> %s' % (len(parts), repr(parts), repr(voice)))
+            # logging.debug ('espeakng: voices: parts= %s %s -> %s' % (len(parts), repr(parts), repr(voice)))
             voices.append(voice)
 
         return voices
-
-    @property
-    def volume(self):
-        return self._volume
-    @volume.setter
-    def volume(self, v):
-        self._volume = v
-
-    @property
-    def audio_dev(self):
-        return self._audio_dev
-    @audio_dev.setter
-    def audio_dev(self, v):
-        self._audio_dev   = v
-
-    @property
-    def word_gap(self):
-        return self._word_gap
-    @word_gap.setter
-    def word_gap(self, v):
-        self._word_gap    = v
-
-    @property
-    def capitals(self):
-        return self._capitals
-    @capitals.setter
-    def capitals(self, v):
-        self._capitals    = v
-
-    @property
-    def line_length(self):
-        return self._line_length
-    @line_length.setter
-    def line_length(self, v):
-        self._line_length = v
-
-    @property
-    def pitch(self):
-        return self._pitch
-    @pitch.setter
-    def pitch(self, v):
-        self._pitch = v
-
-    @property
-    def speed(self):
-        return self._speed
-    @speed.setter
-    def speed(self, v):
-        self._speed = v
-
-    @property
-    def voice(self):
-        return self._voice
-    @voice.setter
-    def voice(self, v):
-        self._voice = v
-
-    @property
-    def samplerate(self):
-        return self._samplerate

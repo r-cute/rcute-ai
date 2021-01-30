@@ -10,4 +10,5 @@ API
    QRCodeRecognizer
    ObjectRecognizer
    WakeWordDetector
-   SpeechRecognizer
+   STT
+   TTS

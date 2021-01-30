@@ -1,8 +1,7 @@
 欢迎阅读 rcute-ai 的文档
 ========================
 
-.. automodule:: rcute_ai
-   :noindex:
+rcute_ai 是对一些 Python 库的简单封装，用来辅助 R-Cute 机器人（如 `Cozmars <https://rcute-cozmars.readthedocs.io>`_ ）完成图像/语音识别等高级功能
 
 -----
 

@@ -5,3 +5,4 @@ Pillow
 face_recognition
 pydub
 vosk
+pyttsx3

@@ -6,7 +6,7 @@ if not util.BUILDING_RTD:
     # import snowboydetect
 
 
-class SpeechRecognizer:
+class STT:
     """语音识别器，对 |CMUSphinx vosk| 的简单封装
 
     .. |CMUSphinx vosk| raw:: html
@@ -28,8 +28,8 @@ class SpeechRecognizer:
         # self._detect.SetSensitivity('0.5'.encode())
 
 
-    def recognize(self, source, timeout=None, silence_timeout=None, silence_threshold=-35):
-        """开始识别
+    def stt(self, source, timeout=None, silence_timeout=None, silence_threshold=-35):
+        """speech to text
 
         :param source: 声音来源
         :param timeout: 超时，即最长的识别时间（秒），默认为 `None` 则表示不设置超时

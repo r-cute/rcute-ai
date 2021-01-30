@@ -20,12 +20,12 @@ class WakeWordDetector:
             return 'R-Cute'
 
     def detect(self, source, timeout=None):
-        """开始识别
+        """开始检测
 
         :param source: 声音来源
-        :param timeout: 超时，即识别的最长时间（秒），默认为 `None` ，表示不设置超时，知道识别到唤醒词才返回
+        :param timeout: 超时，即检测的最长时间（秒），默认为 `None` ，表示不设置超时，知道检测到唤醒词才返回
         :type timeout: float, optional
-        :return: 识别到的唤醒词模型对应的唤醒词，若超时没识别到唤醒词则返回 `None`
+        :return: 检测到的唤醒词模型对应的唤醒词，若超时没检测到唤醒词则返回 `None`
         :rtype: str
         """
         self._cancel = False
@@ -48,6 +48,6 @@ class WakeWordDetector:
                     return# self._process_result(self._rec.FinalResult()['text'])
 
     def cancel(self):
-        """停止识别"""
+        """停止检测"""
         self._cancel = True
 

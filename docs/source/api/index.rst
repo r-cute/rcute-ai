@@ -6,8 +6,8 @@ API
 .. toctree::
 
    rcute_ai
-   ObjectRecognizer
    FaceRecognizer
    QRCodeRecognizer
-   HotwordRecognizer
+   ObjectRecognizer
+   WakeWordDetector
    SpeechRecognizer

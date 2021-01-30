@@ -23,7 +23,7 @@ class TTS:
         for k, v in op.items():
             setattr(self.ng, k, v)
 
-    def tts(self, txt, **options):
+    def say(self, txt, **options):
         """text to speach
 
         :param txt: text to be said
@@ -41,7 +41,7 @@ class TTS:
         self._set(txt, options)
         self.ng.say(txt)
 
-    def tts_wav(self, txt, **options):
+    def wav(self, txt, **options):
         """return tts wav
 
         :param txt: text to be said
@@ -58,8 +58,10 @@ class TTS:
         :return: wav data
         :rtype: bytes
         """
+        file = options.pop('file')
         self._set(txt, options)
         return self.ng.synth_wav(txt)
+        # return self.ng.synth_wav(txt, file=file)
 
 def lang_detect(txt):
     return 'zh' if re.findall(r'[\u4e00-\u9fff]+', txt) else 'en'

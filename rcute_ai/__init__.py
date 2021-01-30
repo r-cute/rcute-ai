@@ -1,9 +1,12 @@
 """
-`rcute-ai` 是对一些图像/语音识别 Python 库的简单封装，用来辅助 R-Cute 机器人（如 |Cozmars| ）进行图像/语音识别等一些高级功能
+rcute-ai consists of simple wrapper classes over some python libs for image/audio detection/recognition etc to facilitate R-Cute robots.
 
-.. |Cozmars| raw:: html
+You need Python *64bit* interpreter, because speech recognition functions does not run on Python 32bit interperter. To find out:
 
-   <a href="https://rcute-cozmars.readthedocs.io" target='blank'>Cozmars</a>
+.. code::
+
+    import sys
+    print(len("{0:b}".format(sys.maxsize))+1)
 
 """
 
@@ -11,7 +14,7 @@
 from .face_recognizer import FaceRecognizer
 from .object_recognizer import ObjectRecognizer
 from .qrcode_recognizer import QRCodeRecognizer
-from .hotword_recognizer_vosk import HotwordRecognizer
+from .wake_word_detector_vosk import WakeWordDetector
 from .speech_recognizer import SpeechRecognizer
 from .tts import TTS
 

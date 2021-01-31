@@ -27,14 +27,14 @@ class ObjectRecognizer:
     :type use_bgr: bool, optional
     """
     def __init__(self, *, confidence_threshold=.5, nms_threshold=.3, use_bgr=True):
-
+        import rcute_ai_data_yolov3_coco as yolo_data
         self._use_bgr = use_bgr
         self._confidence_threshold = confidence_threshold
         self._nms_threshold = nms_threshold
 
-        labels = util.resource('yolov3/coco.names')
-        config = util.resource('yolov3/yolov3-coco.cfg')
-        weights = util.resource('yolov3/yolov3-coco.weights')
+        labels = yolo_data.resource('coco.names')
+        config = yolo_data.resource('yolov3-coco.cfg')
+        weights = yolo_data.resource('yolov3-coco.weights')
 
         with open(labels) as label_file:
             self._labels = label_file.read().strip().split('\n')

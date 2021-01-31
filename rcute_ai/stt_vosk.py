@@ -18,10 +18,11 @@ class STT:
     """
 
     def __init__(self, lang='zh'):
+        import rcute_ai_data_vosk as vosk_data
         lang = lang.lower()
         self._lang = lang
         assert lang in ['en', 'zh', 'cn'], 'Currently only english and chinese are supported'
-        self._rec = KaldiRecognizer(Model(util.resource('sphinx/vosk-model-en-us-daanzu-20200328-lgraph') if lang=='en' else util.resource('sphinx/vosk-model-cn-0.1')), 16000)
+        self._rec = KaldiRecognizer(Model(vosk_data.resource('vosk-model-en-us-daanzu-20200328-lgraph') if lang=='en' else vosk_data.resource('vosk-model-cn-0.1')), 16000)
         # self._detect = snowboydetect.SnowboyDetect(resource_filename=util.resource('snowboy/common.res').encode(),model_str=util.resource('snowboy/hotword_models/阿Q.pmdl').encode())
         # self._detect.SetAudioGain(2)
         # self._detect.ApplyFrontend(False)

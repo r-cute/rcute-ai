@@ -17,7 +17,7 @@ rcute_ai 是对一些 Python 库的简单封装，用来辅助 R-Cute 机器人�
    api/index
 
 
-欢迎提问或反馈bug到 https://github.com/hyansuper/rcute-ai/issues
+欢迎提问或反馈bug到 https://github.com/r-cute/rcute-ai/issues
 
 
 ----------

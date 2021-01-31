@@ -10,7 +10,8 @@ class WakeWordDetector:
     """
 
     def __init__(self, sr=16000, model_file=None, grammar=None):
-        model = Model(model_file or util.resource("sphinx/vosk-model-en-us-daanzu-20200328-lgraph"))
+        import rcute_ai_data_vosk as vosk_data
+        model = Model(model_file or vosk_data.resource("vosk-model-en-us-daanzu-20200328-lgraph"))
         self._det = KaldiRecognizer(model, sr, grammar or '[ "a b c d e f g h i j k l m n o p q r s t u v w x y z key cute", "[unk]" ]')
 
     def _process_result(self, text):

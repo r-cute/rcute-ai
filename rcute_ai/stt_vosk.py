@@ -1,9 +1,7 @@
 from . import util
-if not util.BUILDING_RTD:
-    import json
-    from vosk import Model, KaldiRecognizer
-    from pydub import AudioSegment
-    # import snowboydetect
+import json
+from vosk import Model, KaldiRecognizer
+from pydub import AudioSegment
 
 
 class STT:

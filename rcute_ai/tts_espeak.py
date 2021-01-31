@@ -3,8 +3,7 @@ import re
 import subprocess
 import tempfile
 from . import util
-if not util.BUILDING_RTD:
-    from pyttsx3.voice import Voice
+from pyttsx3.voice import Voice
 
 def lang_detect(txt):
     return 'zh' if re.findall(r'[\u4e00-\u9fff]+', txt) else 'en'

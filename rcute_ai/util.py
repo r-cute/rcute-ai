@@ -1,11 +1,10 @@
 from os import path, listdir, environ
 
 BUILDING_RTD = environ.get("RCUTE_AI_RTD") == "1"
-if not BUILDING_RTD:
-    from PIL import Image, ImageFont, ImageDraw, ImageColor
-    import numpy as np
-    import math
-    import cv2
+from PIL import Image, ImageFont, ImageDraw, ImageColor
+import numpy as np
+import math
+import cv2
 
 def bgr(color):
     if isinstance(color, str):

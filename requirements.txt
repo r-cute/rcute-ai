@@ -2,7 +2,6 @@ opencv-python
 opencv-contrib-python
 numpy
 Pillow
-cmake
 face_recognition
 pydub
 vosk

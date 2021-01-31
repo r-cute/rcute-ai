@@ -1,9 +1,8 @@
 from . import util
 
-if not util.BUILDING_RTD:
-    import face_recognition
-    import cv2
-    import numpy as np
+import face_recognition
+import cv2
+import numpy as np
 
 
 def resize_320x240(img):

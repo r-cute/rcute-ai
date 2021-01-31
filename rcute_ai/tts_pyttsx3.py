@@ -1,6 +1,5 @@
 from . import util
-if not util.BUILDING_RTD:
-    import pyttsx3
+import pyttsx3
 
 class TTS:
     """text to speech class used on Win and Mac

@@ -26,7 +26,7 @@ Windows
             print(sys.version)
             print(len("{0:b}".format(sys.maxsize))+1, 'bit')
 
-    如果是 32位，或者你还未安装 Python，请到 `Python 官网 <https://python.org>`_ 下载 `Python 64位 3.7 版本 <https://www.python.org/ftp/python/3.7.9/python-3.7.9-amd64.exe>`_，安装时记得勾选“添加 Python 到 PATH”。
+    如果是 32位，或者你还未安装 Python，请到 `Python 官网 <https://python.org>`_ 下载 `Python 64位 3.7 版本 <https://www.python.org/ftp/python/3.7.9/python-3.7.9-amd64.exe>`_，安装时记得勾选 “添加 Python 到 PATH”。
 
 * 安装 dlib 模块
 

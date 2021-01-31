@@ -1,7 +1,6 @@
 from . import util
 import json
-if not util.BUILDING_RTD:
-    from vosk import Model, KaldiRecognizer
+from vosk import Model, KaldiRecognizer
 
 class WakeWordDetector:
     """唤醒词检测器，对 `vosk-api <https://github.com/alphacep/vosk-api>`_ 的简单封装，默认的唤醒词是 `'阿Q'` 和 `'R-cute`。

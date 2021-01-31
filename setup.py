@@ -11,7 +11,12 @@ with open(os.path.join(here, 'rcute_ai', 'version.py')) as f:
 with open('./README.md', 'r') as f:
     readme = f.read()
 
-with open('./requirements.txt', 'r') as f:
+if os.environ.get("RCUTE_AI_RTD") == "1":
+    requirements_path = './requirements_rtd.txt'
+else:
+    requirements_path = './requirements.txt'
+
+with open(requirements_path, 'r') as f:
     requirements = [a.strip() for a in f]
 
 setuptools.setup(

@@ -10,7 +10,7 @@ def lang_detect(txt):
     return 'zh' if re.findall(r'[\u4e00-\u9fff]+', txt) else 'en'
 
 class TTS:
-    """text to speech"""
+    """text to speech on Linux"""
 
     def __init__(self):
         self.default_settings= {'b': 1}

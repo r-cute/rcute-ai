@@ -18,14 +18,35 @@
 Windows
 ++++++++++
 
-如果你用的是 Windows 系统，你需要使用 Python *64位* 解释器，因为 rcute-ai 的语音识别功能无法在 Windows 的 Python 32位解释器上运行，请到 `Python 官网 <https://python.org>`_ 下载安装 Python 64位
+* 对于 Windows 用户，首先确保你用的是 Python *3.7 或 3.8 版本的 64位* 解释器，如果你已经安装了 Python，运行以下代码查看是否符合要求：
 
-如何查看 Python 解释器是否为 64位：
+        .. code::
+
+            import sys
+            print(sys.version)
+            print(len("{0:b}".format(sys.maxsize))+1, 'bit')
+
+    如果是 32位，或者你还未安装 Python，请到 `Python 官网 <https://python.org>`_ 下载 `Python 64位 3.7 版本 <https://www.python.org/ftp/python/3.7.9/python-3.7.9-amd64.exe>`_，安装时记得勾选“添加 Python 到 PATH”。
+
+* 安装 dlib 模块
+
+    如果是 Python 3.7 版本，下载 `dlib-19.21.0-cp37-cp37m-win_amd64.whl <https://cdn.jsdelivr.net/gh/vivekmathema/Dlib19.2.1_windows/dlib-19.21.0-cp37-cp37m-win_amd64.whl>`_
+
+    如果是 Python 3.8 版本，下载 `dlib-19.19.0-cp38-cp38-win_amd64.whl <https://cdn.jsdelivr.net/gh/pratyusa98/face-recognition_dlib_library/face-recognition_dlib_library/dlib-19.19.0-cp38-cp38-win_amd64.whl>`_
+
+    然后在所下载的文件夹路径下，运行：
 
     .. code::
 
-        import sys
-        print(len("{0:b}".format(sys.maxsize))+1)
+        python -m pip install dlib-... # 用刚下载的文件名取代这里的 dlib-...
+
+* 以上两步都完成后再安装 rcute-ai：
+
+    .. code::
+
+        python -m pip install rcute-ai -i https://pypi.tuna.tsinghua.edu.cn/simple
+
+
 
 
 Linux

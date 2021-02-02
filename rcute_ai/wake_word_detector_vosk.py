@@ -3,17 +3,16 @@ import json
 from vosk import Model, KaldiRecognizer
 
 class WakeWordDetector:
-    """唤醒词检测器，对 `vosk-api <https://github.com/alphacep/vosk-api>`_ 的简单封装，默认的唤醒词是 `'阿Q'` 和 `'R-cute`。
+    """唤醒词检测器，对 `vosk-api <https://github.com/alphacep/vosk-api>`_ 的简单封装，默认的唤醒词是 `'阿Q'` 和 `'R-Cute'`。
 
     如果要自定义唤醒词，请参考 https://github.com/alphacep/vosk-api/blob/master/python/example/test_words.py
     """
 
-    def __init__(self, sr=16000, model_file=None, grammar=None):
-        import rcute_ai_data_vosk as vosk_data
-        model = Model(model_file or vosk_data.resource("vosk-model-en-us-daanzu-20200328-lgraph"))
-        self._det = KaldiRecognizer(model, sr, grammar or '[ "a b c d e f g h i j k l m n o p q r s t u v w x y z key cute", "[unk]" ]')
+    def __init__(self, sr=16000, lang='en', grammar='[ "a b c d e f g h i j k l m n o p q r s t u v w x y z key cute", "[unk]" ]'):
+        model = Model(util.data_file("vosk/"+ lang))
+        self._det = KaldiRecognizer(model, sr, grammar)
 
-    def _process_result(self, text):
+    def _detected(self, text):
         if text == 'r q':
             return '阿Q'
         elif text == 'r cute':
@@ -35,9 +34,9 @@ class WakeWordDetector:
         while True:
             segment = source.read()
             if self._rec.AcceptWaveform(segment.raw_data):
-                p= self._process_result(json.loads(self._rec.Result())['text'])
+                p= self._detected(json.loads(self._rec.Result())['text'])
             else:
-                p= self._process_result(json.loads(self._rec.PartialResult())['partial'])
+                p= self._detected(json.loads(self._rec.PartialResult())['partial'])
             if p:
                 return p
             if self._cancel:
@@ -45,7 +44,7 @@ class WakeWordDetector:
             elif timeout:
                 count += segment.duration_seconds
                 if count > timeout:
-                    return# self._process_result(self._rec.FinalResult()['text'])
+                    return# self._detected(self._rec.FinalResult()['text'])
 
     def cancel(self):
         """停止检测"""

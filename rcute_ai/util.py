@@ -16,6 +16,14 @@ RESOURCES = path.join(path.dirname(__file__), 'resources')
 def resource(file):
     return path.join(RESOURCES, file)
 
+data_dir = environ.get("RCUTE_AI_DATA")
+
+def data_file(file):
+    p = path.join(data_dir, file)
+    assert path.exists(p), f"{p} does not exist."
+    return p
+
+
 # def hotword_model_list_snowboy():
 #     return listdir(resource('snowboy/hotword_models'))
 
@@ -85,7 +93,7 @@ def imshow(img, win='', wait=1):
     :type img: numpy.ndarray
     :param win: 图像窗口的名字
     :type win: str
-    :param wait: `cv2.waitKey()`的参数，默认是 `1`
+    :param wait: :meth:`cv2.waitKey` 的参数，默认是 `1`
     :type wait: int
     """
     cv2.imshow(win, img)

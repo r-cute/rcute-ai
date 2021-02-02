@@ -3,7 +3,7 @@ import cv2
 import numpy as np
 
 class QRCodeRecognizer(cv2.QRCodeDetector):
-    """二维码识别器
+    """二维码识别类
 
     :param use_bgr: 要识别的图片是否是“BGR”色彩模式，默认是 `True` ，“BGR”是opencv默认的模式，设为 `False` 则表示使用“RGB”模式
     :type use_bgr: bool, optional

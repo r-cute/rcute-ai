@@ -67,6 +67,7 @@ class TTS:
         :param txt: text to be said
         :type txt: str
         :param options: if not set, :data:`default_settings` is used.
+
             * voice/lang: if not set, English is the default unless Chinese characters are detected in :data:`txt`
             * volume
             * pitch
@@ -89,6 +90,7 @@ class TTS:
         :param file: path for tts wav data to be saved at, default to None
         :type txt: str, optional
         :param options: if not set, :data:`default_settings` is used.
+
             * voice/lang: if not set, English is the default unless Chinese characters are detected in :data:`txt`
             * volume
             * pitch

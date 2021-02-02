@@ -1,5 +1,4 @@
 from . import util
-
 import face_recognition
 import cv2
 import numpy as np
@@ -15,7 +14,7 @@ def resize_320x240(img):
     return img, 1
 
 class FaceRecognizer:
-    """人脸识别器，是对 |face_recognition| 的简单封装，可以从图像中检测人脸的位置并与已知的人脸对比识别他/她们是谁
+    """人脸识别类，是对 |face_recognition| 的简单封装，可以从图像中检测人脸的位置并与已知的人脸对比识别他/她们是谁
 
     .. |face_recognition| raw:: html
 

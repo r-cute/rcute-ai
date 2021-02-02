@@ -1,31 +1,36 @@
 from . import util
+from os import listdir, path
 import json
 from vosk import Model, KaldiRecognizer
 from pydub import AudioSegment
 
 
 class STT:
-    """语音识别器，对 |CMUSphinx vosk| 的简单封装
+    """语音识别类，对 |CMUSphinx vosk| 的简单封装
 
     .. |CMUSphinx vosk| raw:: html
 
         <a href='https://github.com/alphacep/vosk-api' target='blank'>CMUSphinx vosk</a>
 
-    :param lang: 语言，目前支持中文 `'zh'` 或英文 `'en'` ，默认中文
+    :param lang: 语言缩写，默认为英文 `'en'`。这个参数和 `rcute-ai 依赖的资源文件 <../installation.html#data-file>`_ 的语音识别 vosk 文件夹里的文件名对应
     :type lang: str, optinal
     """
 
-    def __init__(self, lang='zh'):
-        import rcute_ai_data_vosk as vosk_data
-        lang = lang.lower()
+    def __init__(self, lang='en'):
         self._lang = lang
-        assert lang in ['en', 'zh', 'cn'], 'Currently only english and chinese are supported'
-        self._rec = KaldiRecognizer(Model(vosk_data.resource('vosk-model-en-us-daanzu-20200328-lgraph') if lang=='en' else vosk_data.resource('vosk-model-cn-0.1')), 16000)
+        self._rec = KaldiRecognizer(Model(util.data_file('vosk/'+lang)), 16000)
         # self._detect = snowboydetect.SnowboyDetect(resource_filename=util.resource('snowboy/common.res').encode(),model_str=util.resource('snowboy/hotword_models/阿Q.pmdl').encode())
         # self._detect.SetAudioGain(2)
         # self._detect.ApplyFrontend(False)
         # self._detect.SetSensitivity('0.5'.encode())
 
+    @property
+    def lang_list(self):
+        """列出支持的所有语言
+
+        如何支持添加你需要的语言？参考 `下载 rcute-ai 依赖的资源文件 -> 语音识别 <../installation.html#data-file>`_"""
+        vosk_dir = util.data_file('vosk')
+        return [f for f in listdir(vosk_dir) if path.isdir(path.join(vosk_dir, f))]
 
     def stt(self, source, timeout=None, silence_timeout=None, silence_threshold=-35):
         """speech to text

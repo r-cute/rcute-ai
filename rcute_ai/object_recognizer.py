@@ -1,10 +1,12 @@
 from . import util
 import cv2
 import numpy as np
+import fnmatch
+from os import listdir, path
 
 
 class ObjectRecognizer:
-    """ |yolov3| coco 物品识别器，能识别 |80种物品|
+    """ |yolov3| coco 物品识别类，能识别 |80种物品|
 
     .. |yolov3| raw:: html
 
@@ -25,15 +27,19 @@ class ObjectRecognizer:
     :param use_bgr: 要识别的图片是否是“BGR”色彩模式，默认是 `True` ，“BGR”是opencv默认的模式，设为 `False` 则表示使用“RGB”模式
     :type use_bgr: bool, optional
     """
-    def __init__(self, *, confidence_threshold=.5, nms_threshold=.3, use_bgr=True):
-        import rcute_ai_data_yolov3_coco as yolo_data
+    def __init__(self, model='coco', *, confidence_threshold=.5, nms_threshold=.3, use_bgr=True):
         self._use_bgr = use_bgr
         self._confidence_threshold = confidence_threshold
         self._nms_threshold = nms_threshold
 
-        labels = yolo_data.resource('coco.names')
-        config = yolo_data.resource('yolov3-coco.cfg')
-        weights = yolo_data.resource('yolov3-coco.weights')
+        folder = util.data_file(f'yolo/{model}')
+        for f in listdir(folder):
+            if fnmatch.fnmatch(f, '*.names'):
+                labels = path.join(folder, f)
+            elif fnmatch.fnmatch(f, '*.cfg'):
+                config = path.join(folder, f)
+            elif fnmatch.fnmatch(f, '*.weights'):
+                weights =path.join(folder, f)
 
         with open(labels) as label_file:
             self._labels = label_file.read().strip().split('\n')
@@ -55,7 +61,8 @@ class ObjectRecognizer:
         :rtype: tuple
         """
         h, w = img.shape[:2]
-        blob = cv2.dnn.blobFromImage(img, 1 / 255.0, (320, 240), swapRB=self._use_bgr, crop=False)
+        img = cv2.resize(img, (224,224))
+        blob = cv2.dnn.blobFromImage(img, 1/255.0, (224,224), swapRB=self._use_bgr, crop=False)
         self._net.setInput(blob)
         outs = self._net.forward(self._layer_names)
         boxes = []

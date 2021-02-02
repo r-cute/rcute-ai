@@ -4,7 +4,3 @@ Simple wrapper over some python libs for image/audio detection/recognition etc t
 
 中文文档: https://rcute-ai.readthedocs.io
 
-```
-apt install espeak-ng
-python3 -m pip install rcute-ai
-```

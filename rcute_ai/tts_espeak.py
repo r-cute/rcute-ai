@@ -33,7 +33,6 @@ class TTS:
         return {('-'if len(k)==1 else '--')+k:v for k,v in op.items()}
 
     def _exe(self, cmd, sync=False):
-        print(' '.join(cmd))
         # logging.debug ('espeak cmd: '+ ' '.join(cmd))
         p = subprocess.Popen(cmd,
                              stdout=subprocess.PIPE,

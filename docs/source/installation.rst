@@ -55,7 +55,7 @@ Mac OS X
 
         从 https://alphacephei.com/vosk/models 下载用于语音识别的模型文件，解压到 vosk 文件夹里，并将解压出来的文件夹命名为对应语言的缩写。该缩写和 语音识别类 `rcute_ai.STT <api/STT.html>`_ 的语言参数对应
 
-        比如，下载中文模型 `vosk-model-cn-0.1.zip <https://alphacephei.com/vosk/models/vosk-model-cn-0.1.zip>`_，解压后的文件夹叫 “vosk-model-cn-0.1”，将其重命名为 “cn”。再比如，英文模型 `vosk-model-en-us-daanzu-20200905-lgraph <https://alphacephei.com/vosk/models/vosk-model-en-us-daanzu-20200905-lgraph.zip>`_，下载并解压得到名为 “vosk-model-en-us-daanzu-20200905-lgraph” 的文件夹，把它其重命名为 “en”。其中英文模型是语音唤醒必须的。
+        比如，下载中文模型 `vosk-model-cn-0.1.zip <https://alphacephei.com/vosk/models/vosk-model-cn-0.1.zip>`_，解压后的文件夹叫 “vosk-model-cn-0.1”，将其重命名为 “zh”。再比如，英文模型 `vosk-model-en-us-daanzu-20200905-lgraph <https://alphacephei.com/vosk/models/vosk-model-en-us-daanzu-20200905-lgraph.zip>`_，下载并解压得到名为 “vosk-model-en-us-daanzu-20200905-lgraph” 的文件夹，把它其重命名为 “en”。其中英文模型是语音唤醒必须的。
 
     * 物体识别
 

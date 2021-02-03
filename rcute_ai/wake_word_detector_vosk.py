@@ -30,13 +30,13 @@ class WakeWordDetector:
         self._cancel = False
         if timeout:
             count = 0.0
-        self._rec.FinalResult() # clear buffer
+        self._det.FinalResult() # clear buffer
         while True:
             segment = source.read()
-            if self._rec.AcceptWaveform(segment.raw_data):
-                p= self._detected(json.loads(self._rec.Result())['text'])
+            if self._det.AcceptWaveform(segment.raw_data):
+                p= self._detected(json.loads(self._det.Result())['text'])
             else:
-                p= self._detected(json.loads(self._rec.PartialResult())['partial'])
+                p= self._detected(json.loads(self._det.PartialResult())['partial'])
             if p:
                 return p
             if self._cancel:
@@ -44,7 +44,7 @@ class WakeWordDetector:
             elif timeout:
                 count += segment.duration_seconds
                 if count > timeout:
-                    return# self._detected(self._rec.FinalResult()['text'])
+                    return# self._detected(self._det.FinalResult()['text'])
 
     def cancel(self):
         """停止检测"""

@@ -4,3 +4,6 @@ Simple wrapper over some python libs for image/audio detection/recognition etc t
 
 中文文档: https://rcute-ai.readthedocs.io
 
+installation instructions: https://github.com/r-cute/rcute-ai/blob/master/install.rst
+
+

@@ -4,7 +4,6 @@ import json
 from vosk import Model, KaldiRecognizer
 from pydub import AudioSegment
 
-
 class STT:
     """语音识别类，对 |CMUSphinx vosk| 的简单封装
 
@@ -18,11 +17,13 @@ class STT:
 
     def __init__(self, lang='en'):
         self._lang = lang
-        self._rec = KaldiRecognizer(Model(util.data_file('vosk/'+lang)), 16000)
-        # self._detect = snowboydetect.SnowboyDetect(resource_filename=util.resource('snowboy/common.res').encode(),model_str=util.resource('snowboy/hotword_models/阿Q.pmdl').encode())
-        # self._detect.SetAudioGain(2)
-        # self._detect.ApplyFrontend(False)
-        # self._detect.SetSensitivity('0.5'.encode())
+        self.load(lang)
+        self._rec = KaldiRecognizer(util.cache[f'vosk.{lang}'], 16000)
+
+    @property
+    def lang(self):
+        """语言"""
+        return self._lang
 
     @property
     def lang_list(self):
@@ -31,6 +32,15 @@ class STT:
         如何支持添加你需要的语言？参考 `下载 rcute-ai 依赖的资源文件 -> 语音识别 <../installation.html#data-file>`_"""
         vosk_dir = util.data_file('vosk')
         return [f for f in listdir(vosk_dir) if path.isdir(path.join(vosk_dir, f))]
+
+    def load(self, lang=None):
+        """load language models in advance"""
+        if isinstance(lang, list):
+            for l in lang:
+                self.load(l)
+        else:
+            model = util.cache.get(f'vosk.{lang}', Model(util.data_file(f'vosk/{lang}')))
+            util.cache[f'vosk.{lang}'] = model
 
     def stt(self, source, timeout=None, silence_timeout=None, silence_threshold=-35):
         """speech to text
@@ -67,7 +77,6 @@ class STT:
                 text = self._rec.FinalResult()
                 break
             # voice activity detection:
-            # if self._detect.RunDetection(data) == -2: # silence
             if silence_timeout:
                 if segment.dBFS < silence_threshold:
                     silence_count += seg_duration

@@ -10,8 +10,7 @@
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
-import os
-import sys
+import os, sys, re
 
 sys.path.insert(0, os.path.abspath('../../'))
 
@@ -22,6 +21,10 @@ with open(os.path.join(pkg_base_dir, 'rcute_ai', 'version.py')) as f:
     ns = {}
     exec(f.read(), ns)
     version = ns['__version__']
+
+module2import={'Pillow':'PIL', 'opencv-contrib-python':'cv2', 'opencv-python':'cv2'}
+with open(os.path.join(pkg_base_dir, 'requirements.txt')) as f:
+    depends = list(set(module2import.get(b,b).replace('-','_') for b in re.findall(r'^([\w-]*)[\s\[<>=]?', f.read(), flags=re.ASCII+re.MULTILINE)))
 
 # generate api
 
@@ -80,11 +83,14 @@ exclude_patterns = []
 #
 html_theme = 'sphinx_rtd_theme'
 pygments_style = 'sphinx'
-autodoc_mock_imports = ['face_recognition',
-                    'Pillow',
-                    'pydub',
-                    'vosk',
-                    'pyttsx3']
+autodoc_mock_imports = depends
+# ['face_recognition',
+#                     'cv2',
+#                     'numpy',
+#                     'PIL',
+#                     'pydub',
+#                     'vosk',
+#                     'pyttsx3']
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".

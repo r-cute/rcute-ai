@@ -21,6 +21,7 @@ class TTS:
 
     def say(self, txt, **options):
         """ """
+        self._ng.isBusy() and self._ng.stop()
         self._set_properties(options)
         self._ng.say(txt)
         self._ng.runAndWait()

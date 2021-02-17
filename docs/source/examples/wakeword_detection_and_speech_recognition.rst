@@ -81,13 +81,13 @@
                 print(text)
 
                 if text == '前进':
-                    robot.forward(3)
+                    robot.forward(2)
                 elif text == '后退':
-                    robot.backward(3)
+                    robot.backward(2)
                 elif text == '左转':
-                    robot.turn_left(3)
+                    robot.turn_left(2)
                 elif text == '右转':
-                    robot.turn_right(3)
+                    robot.turn_right(2)
                 elif text == '结束':
                     break
 

@@ -1,10 +1,13 @@
 from os import path, listdir, environ
-
-BUILDING_RTD = environ.get("RCUTE_AI_RTD") == "1"
 from PIL import Image, ImageFont, ImageDraw, ImageColor
 import numpy as np
 import math
 import cv2
+
+# from weakref import WeakValueDictionary
+# # reuse loaded models/data to save memory
+# cache = WeakValueDictionary()
+cache = {}
 
 def bgr(color):
     if isinstance(color, str):
@@ -23,7 +26,6 @@ def data_file(file):
     assert path.exists(p), f"{p} does not exist."
     return p
 
-
 # def hotword_model_list_snowboy():
 #     return listdir(resource('snowboy/hotword_models'))
 
@@ -33,8 +35,7 @@ def data_file(file):
 import logging
 logger = logging.getLogger('rcute-ai')
 
-if not BUILDING_RTD:
-    _font = ImageFont.truetype(resource("msyh.ttc"), 15)
+_font = ImageFont.truetype(resource("msyh.ttc"), 15)
 
 '''
 def create_text_image(text, area=None):

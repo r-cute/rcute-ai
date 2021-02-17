@@ -32,8 +32,6 @@ class FaceRecognizer:
         self._use_bgr = use_bgr
         self._unknown_name_image = util.create_text_image("陌生人")
 
-
-
     def memorize(self, name, file_or_img):
         """记住某一个人的脸，若在后续的识别中看到这个人脸，就能得到他/她的名字
 

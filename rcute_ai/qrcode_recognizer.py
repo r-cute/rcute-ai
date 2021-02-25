@@ -52,7 +52,7 @@ class QRCodeRecognizer(cv2.QRCodeDetector):
         except Exception:
             return None, ''
 
-    def draw_labels(self, img, points, text, color=(0,0,180), text_color=(255,255,255)):
+    def annotate(self, img, points, text, color=(0,0,180), text_color=(255,255,255)):
         """在图像中标记出识别到的二维码
 
         :param img: 要标记的图像，应该是被 :func:`recognize` 识别过的同一个图像

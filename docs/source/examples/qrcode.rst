@@ -19,7 +19,7 @@
                 points, text = rec.recognize(image)
 
                 # 将识别到的二维码的信息画到图中
-                rec.draw_labels(image, points, text)
+                rec.annotate(image, points, text)
 
                 ai.imshow(image)
 

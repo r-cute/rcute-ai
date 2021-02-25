@@ -30,7 +30,7 @@ class FaceRecognizer:
         self._face_names = []
         self._name_images = []
         self._use_bgr = use_bgr
-        self._unknown_name_image = util.create_text_image("陌生人")
+        self._unknown_name_image = util.create_text_image("Unknown")
 
     def memorize(self, name, file_or_img):
         """记住某一个人的脸，若在后续的识别中看到这个人脸，就能得到他/她的名字
@@ -87,7 +87,9 @@ class FaceRecognizer:
             img = img[:, :, ::-1]
         locations = face_recognition.face_locations(img)
         ret_locations = [((left+right)/2, (top+bottom)/2, right-left, bottom-top) for top, right, bottom, left in locations]
-        ret_locations = [(int(a*resize_factor) for a in p) for p in ret_locations]
+        ret_locations = [tuple(int(a*resize_factor) for a in p) for p in ret_locations]
+        if not self._face_encodings:
+            return ret_locations, [None]*len(ret_locations)
         names = []
         for encoding in face_recognition.face_encodings(img, locations):
             matches = face_recognition.compare_faces(self._face_encodings, encoding)
@@ -100,7 +102,7 @@ class FaceRecognizer:
             names.append(name)
         return ret_locations, names
 
-    def draw_labels(self, img, locations, names=None, color='red', text_color='white'):
+    def annotate(self, img, locations, names=None, color='red', text_color='white'):
         """在图像中框出人脸，并标记上对应的名字
 
         :param img: 要标记的图像，应该是被 :func:`recognize` 识别过的同一个图像

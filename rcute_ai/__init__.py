@@ -17,4 +17,4 @@ else:
 
 from .version import __version__
 
-from .util import imshow, imclose
+from .util import imshow, imclose, set_data_path

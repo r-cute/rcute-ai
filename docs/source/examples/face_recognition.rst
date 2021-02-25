@@ -29,7 +29,7 @@
                 locations, names = rec.recognize(image)
 
                 # 把识别到的人脸信息（位置和名字）画到图上
-                rec.draw_labels(image, locations, names)
+                rec.annotate(image, locations, names)
 
                 ai.imshow(image)
 

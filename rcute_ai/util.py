@@ -19,7 +19,11 @@ RESOURCES = path.join(path.dirname(__file__), 'resources')
 def resource(file):
     return path.join(RESOURCES, file)
 
-data_dir = environ.get("RCUTE_AI_DATA")
+data_dir = environ.get("RCUTE_AI_DATA_PATH")
+def set_data_path(path):
+    """Overwrites the environment variable RCUTE_AI_DATA_PATH"""
+    global data_dir
+    data_dir = path
 
 def data_file(file):
     p = path.join(data_dir, file)

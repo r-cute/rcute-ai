@@ -47,7 +47,7 @@ Mac OS X
 
 * （可选）下载 rcute-ai 依赖的资源文件
 
-    新建一个文件夹用于存放这些资源文件，新建环境变量 “RCUTE_AI_DATA” ，把这个文件夹的路径作为该环境变量的值。这样当 rcute-ai 模块需要相应资源文件时就会到这个文件夹里寻找。
+    新建一个文件夹用于存放这些资源文件，新建环境变量 “RCUTE_AI_DATA_PATH” ，把这个文件夹的路径作为该环境变量的值。这样当 rcute-ai 模块需要相应资源文件时就会到这个文件夹里寻找。
 
     * 语音识别
 
@@ -59,7 +59,7 @@ Mac OS X
 
     * 物体识别
 
-        在上述环境变量 “RCUTE_AI_DATA” 对应的文件夹里，新建另一个名为 “yolo” 的文件夹，在 “yolo” 文件夹里再新建一个 “coco” 文件夹。
+        在上述环境变量 “RCUTE_AI_DATA_PATH” 对应的文件夹里，新建另一个名为 “yolo” 的文件夹，在 “yolo” 文件夹里再新建一个 “coco” 文件夹。
 
         下载 `coco.names <https://codechina.csdn.net/mirrors/pjreddie/darknet/-/raw/master/data/coco.names?inline=false>`_， `yolov3.cfg <https://codechina.csdn.net/mirrors/pjreddie/darknet/-/raw/master/cfg/yolov3.cfg?inline=false>`_， `yolov3.weights <https://pjreddie.com/media/files/yolov3.weights>`_ 三个文件到 coco 文件夹里
 

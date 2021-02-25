@@ -25,8 +25,8 @@ class STT:
         """语言"""
         return self._lang
 
-    @property
-    def lang_list(self):
+    @classmethod
+    def get_lang_list(cl):
         """列出支持的所有语言
 
         如何支持添加你需要的语言？参考 `下载 rcute-ai 依赖的资源文件 -> 语音识别 <../installation.html#data-file>`_"""

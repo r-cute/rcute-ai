@@ -98,7 +98,7 @@ class ObjectRecognizer:
         # return ret_boxes, ret_labels, ret_confidences
         return ret_boxes, ret_labels
 
-    def draw_labels(self, img, locations, names=None, color=(0,0,180), text_color=(255,255,255)):
+    def annotate(self, img, locations, names=None, color=(0,0,180), text_color=(255,255,255)):
         """在图像中框出识别到的物品，并标记上对应的品名
 
         :param img: 要标记的图像，应该是被 :func:`recognize` 识别过的同一个图像

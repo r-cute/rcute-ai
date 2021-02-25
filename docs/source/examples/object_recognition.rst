@@ -1,7 +1,7 @@
 物品识别
 ==========
 
-:class:`rcute_ai.ObjectRecognizer` 类可以用来识别图像中的物品，使用十分简单。:meth:`recognize` 方法用来识别图像，返回图像中识别到的物品的位置和名称，:meth:`draw_labels` 方法可以将识别到的物品在图像中标注出来
+:class:`rcute_ai.ObjectRecognizer` 类可以用来识别图像中的物品，使用十分简单。:meth:`recognize` 方法用来识别图像，返回图像中识别到的物品的位置和名称，:meth:`annotate` 方法可以将识别到的物品在图像中标注出来
 
 .. note::
 
@@ -33,7 +33,7 @@
                 locations, names = rec.recognize(image)
 
                 # 将识别到的物体的信息画到图中
-                rec.draw_labels(image, locations, names)
+                rec.annotate(image, locations, names)
 
                 # 显示图像
                 ai.imshow(image)

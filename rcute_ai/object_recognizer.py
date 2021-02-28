@@ -3,7 +3,7 @@ import cv2
 import numpy as np
 import fnmatch
 from os import listdir, path
-from threading import Lock
+# from threading import Lock
 
 
 class ObjectRecognizer:
@@ -48,9 +48,9 @@ class ObjectRecognizer:
         if not util.cache.get(f'yolo.{model}'):
             net = cv2.dnn.readNetFromDarknet(config, weights)
             net.setPreferableBackend(cv2.dnn.DNN_BACKEND_OPENCV)
-            net.lock = Lock()
             # net.setPreferableTarget(cv2.dnn.DNN_TARGET_OPENCL)
             util.cache[f'yolo.{model}'] = net
+            # net.loc=Lock()
         self._net = util.cache[f'yolo.{model}']
 
         self._layer_names = self._net.getLayerNames()
@@ -69,9 +69,9 @@ class ObjectRecognizer:
         h, w = img.shape[:2]
         img = cv2.resize(img, (224,224))
         blob = cv2.dnn.blobFromImage(img, 1/255.0, (224,224), swapRB=self._use_bgr, crop=False)
-        with self._net.lock:
-            self._net.setInput(blob)
-            outs = self._net.forward(self._layer_names)
+        # with self._net.lock:
+        self._net.setInput(blob)
+        outs = self._net.forward(self._layer_names)
         boxes = []
         confidences = []
         class_ids = []

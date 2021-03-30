@@ -90,7 +90,7 @@ Linux
         git clone https://codechina.csdn.net/mirrors/caixxiong/espeak-data.git
         sudo mv /usr/lib/x86_64-linux-gnu/espeak-data /usr/lib/x86_64-linux-gnu/espeak-data.dak
         sudo unzip espeak-data/espeak-data.zip -d /usr/lib/x86_64-linux-gnu/
-        cd /usr/lib/x86_64-linux-gnu/
+        cd /usr/lib/x86_64-linux-gnu/espeak-data
         sudo espeak --compile=zh
         sudo espeak --compile=zhy
 

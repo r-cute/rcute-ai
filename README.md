@@ -1,6 +1,8 @@
 # rcute-ai
 
-Simple wrapper over some python libs for image/audio detection/recognition etc to facilitate R-Cute robots.
+rcute-ai is an ai module to facilitate the R-Cute robots.
+
+it's really a simple wrapper over some image/audio detection/recognition python libs, just to provide more consistent api across different libs.
 
 中文文档: https://rcute-ai.readthedocs.io
 

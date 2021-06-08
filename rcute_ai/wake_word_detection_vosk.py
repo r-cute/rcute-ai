@@ -1,7 +1,7 @@
 from . import util
 import json
 from vosk import Model, KaldiRecognizer, SetLogLevel
-SetLogLevel(-1)
+# SetLogLevel(-1)
 
 class WakeWordDetector:
     """唤醒词检测器，对 `vosk-api <https://github.com/alphacep/vosk-api>`_ 的简单封装，默认的唤醒词是 `'阿Q'` 和 `'R-Cute'`。
@@ -9,8 +9,8 @@ class WakeWordDetector:
     如果要自定义唤醒词，请参考 https://github.com/alphacep/vosk-api/blob/master/python/example/test_words.py
     """
     def __init__(self, sr=16000, lang='en', grammar='[ "a b c d e f g h i j k l m n o p q r s t u v w x y z key cute", "[unk]" ]'):
-        self.load(lang)
-        self._det = KaldiRecognizer(util.cache[f'vosk.{lang}'], sr, grammar)
+        lang_file = util.vosk_map[lang]
+        self._det = KaldiRecognizer(self.load(lang_file), sr, grammar)
 
     def _detected(self, text):
         if text == 'r q':
@@ -18,10 +18,11 @@ class WakeWordDetector:
         elif text == 'r cute':
             return 'R-Cute'
 
-    def load(self, lang='en'):
+    def load(self, lang_file):
         """load language model in advance"""
-        model = util.cache.get(f'vosk.{lang}', Model(util.data_file(f'vosk/{lang}')))
-        util.cache[f'vosk.{lang}'] = model
+        model = util.cache.get(f'vosk.{lang_file}', Model(util.data_file(f'vosk/{lang_file}')))
+        util.cache[f'vosk.{lang_file}'] = model
+        return model
 
     def detect(self, source, timeout=None):
         """开始检测

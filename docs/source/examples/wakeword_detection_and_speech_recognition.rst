@@ -23,7 +23,7 @@
     wwd = ai.WakeWordDetector()
 
     # 把 IP 换成你的 Cozmars IP 地址，连接机器人
-    with Robot('192.168.1.102') as robot:
+    with Robot() as robot:
 
         # 把麦克风音量较小，所以我们把音量调到 100%
         robot.microphone.volumn = 100
@@ -49,7 +49,7 @@
 
 唤醒词检测 + 语音识别
 -------------------------------
-:class:`rcute_ai.STT` 是用来作语音识别的类，它的 :meth:`stt` 方法将语音转化为文本
+:class:`rcute_ai.STT` 是用来作语音识别的类，它的 :meth:`stt` 方法将语音转化为文本（Speech To Text）
 
 接下来我们拓展上面的程序，在唤醒词检测之后进行语音识别。运行程序，对着 Cozmars 背上的麦克风说：“阿Q”，在听到“嘟”的一声提示音后，接着说出你的命令：“前进”/“后退”/“左传”/“右转”，或者说“结束程序”
 
@@ -65,7 +65,7 @@
     sr = ai.STT(lang='zh')
 
     # 把 IP 换成你的 Cozmars IP 地址 或 序列号
-    with Robot('192.168.1.102') as robot:
+    with Robot() as robot:
 
         with robot.microphone.get_buffer() as mic_buf:
 

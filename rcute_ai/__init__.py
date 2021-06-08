@@ -1,14 +1,17 @@
 """
-rcute-ai consists of simple wrapper classes over some python libs for image/audio detection/recognition etc to facilitate R-Cute robots.
+rcute-ai simply wrappers some python libs for image/audio detection/recognition etc to provide consistent API.
 
 """
 
 
-from .face_recognizer import FaceRecognizer
-from .object_recognizer import ObjectRecognizer
-from .qrcode_recognizer import QRCodeRecognizer
-from .wake_word_detector_vosk import WakeWordDetector
+from .face_detection import FaceDetector
+from .object_detection import ObjectDetector
+from .qrcode_detection import QRCodeDetector
+from .wake_word_detection_vosk import WakeWordDetector
 from .stt_vosk import STT
+from .hand_detection import HandDetector, HandLandmark
+from .pose_detection import PoseDetector, PoseLandmark
+from .ocr_tesseract import OCR
 import platform
 if platform.system()=='Linux':
     from .tts_espeak import TTS

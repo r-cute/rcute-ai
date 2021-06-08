@@ -6,7 +6,7 @@ from os import listdir, path
 # from threading import Lock
 
 
-class ObjectRecognizer:
+class ObjectDetector:
     """ |yolov3| coco 物品识别类，能识别 |80种物品|
 
     .. |yolov3| raw:: html
@@ -17,13 +17,13 @@ class ObjectRecognizer:
 
        <a href='https://github.com/pjreddie/darknet/blob/master/data/coco.names' target='blank'>80种物品</a>
 
-    .. |cv2.dnn.NMSBoxes| raw:: html
+    .. |cv2.dnn.NMSlocations| raw:: html
 
-       <a href='https://docs.opencv.org/master/d6/d0f/group__dnn.html#ga9d118d70a1659af729d01b10233213ee' target='blank'>cv2.dnn.NMSBoxes</a>
+       <a href='https://docs.opencv.org/master/d6/d0f/group__dnn.html#ga9d118d70a1659af729d01b10233213ee' target='blank'>cv2.dnn.NMSlocations</a>
 
-    :param confidence_threshold: 默认是 `0.5`，用于 |cv2.dnn.NMSBoxes| 的参数
+    :param confidence_threshold: 默认是 `0.5`，用于 |cv2.dnn.NMSlocations| 的参数
     :type confidence_threshold: float, optional
-    :param nms_threshold: 默认是 `0.3`，用于 |cv2.dnn.NMSBoxes| 的参数
+    :param nms_threshold: 默认是 `0.3`，用于 |cv2.dnn.NMSlocations| 的参数
     :type nms_threshold: float, optional
     :param use_bgr: 要识别的图片是否是“BGR”色彩模式，默认是 `True` ，“BGR”是opencv默认的模式，设为 `False` 则表示使用“RGB”模式
     :type use_bgr: bool, optional
@@ -56,11 +56,13 @@ class ObjectRecognizer:
         self._layer_names = self._net.getLayerNames()
         self._layer_names = [self._layer_names[i[0] - 1] for i in self._net.getUnconnectedOutLayers()]
 
-    def recognize(self, img):
+    def detect(self, img, *, annotate=False):
         """从图像中识别物体
 
         :param img: 用来识别的图像
         :type img: numpy.ndarray
+        :param annotate: whether or not to annotate detected results on image
+        :type annotate: bool
         :return: 返回识别到的物品的位置数组和对应的物品名字数组
 
             位置数组中的每个元素是一个 `tuple` ，包含物品中心的坐标和物品的宽和高： `(centerX, centerY, width, height)`
@@ -72,7 +74,7 @@ class ObjectRecognizer:
         # with self._net.lock:
         self._net.setInput(blob)
         outs = self._net.forward(self._layer_names)
-        boxes = []
+        locations = []
         confidences = []
         class_ids = []
         for output in outs:
@@ -83,20 +85,21 @@ class ObjectRecognizer:
                 if confidence > self._confidence_threshold:
                     box = detection[0:4] * np.array([w, h, w, h])
                     (centerX, centerY, width, height) = box
-                    boxes.append((int(centerX), int(centerY), int(width), int(height)))
+                    locations.append((int(centerX), int(centerY), int(width), int(height)))
                     confidences.append(float(confidence))
                     class_ids.append(class_id)
-        ret_boxes = []
+        ret_locations = []
         ret_confidences = []
         ret_labels = []
-        nms_boxes = cv2.dnn.NMSBoxes(boxes, confidences, self._confidence_threshold, self._nms_threshold)
-        if len(nms_boxes):
-            for i in nms_boxes.flatten():
-                ret_boxes.append(boxes[i])
+        nms_locations = cv2.dnn.NMSlocations(locations, confidences, self._confidence_threshold, self._nms_threshold)
+        if len(nms_locations):
+            for i in nms_locations.flatten():
+                ret_locations.append(locations[i])
                 ret_labels.append(self._labels[class_ids[i]])
                 # ret_confidences.append(confidences[i])
-        # return ret_boxes, ret_labels, ret_confidences
-        return ret_boxes, ret_labels
+        # return ret_locations, ret_labels, ret_confidences
+        annotate and self.annotate(img, ret_locations, ret_labels)
+        return ret_locations, ret_labels
 
     def annotate(self, img, locations, names=None, color=(0,0,180), text_color=(255,255,255)):
         """在图像中框出识别到的物品，并标记上对应的品名

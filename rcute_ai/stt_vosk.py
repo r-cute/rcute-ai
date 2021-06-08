@@ -17,38 +17,43 @@ class STT:
 
     def __init__(self, lang='en'):
         self._lang = lang
-        self.load(lang)
-        self._rec = KaldiRecognizer(util.cache[f'vosk.{lang}'], 16000)
+        self._rec = KaldiRecognizer(self.load(util.vosk_map[lang]), 16000)
 
     @property
     def lang(self):
         """语言"""
         return self._lang
 
+    @lang.setter
+    def lang(self, lang):
+        if self._lang != lang:
+            self._lang = lang
+            self._rec = KaldiRecognizer(self.load(util.vosk_map[lang]), 16000)
+
     @classmethod
     def get_lang_list(cl):
         """列出支持的所有语言
 
         如何支持添加你需要的语言？参考 `下载 rcute-ai 依赖的资源文件 -> 语音识别 <../installation.html#data-file>`_"""
-        vosk_dir = util.data_file('vosk')
-        return [f for f in listdir(vosk_dir) if path.isdir(path.join(vosk_dir, f))]
+        return list(util.vosk_map)
 
-    def load(self, lang=None):
+    def load(self, lang_file=None):
         """load language models in advance"""
-        if isinstance(lang, list):
-            for l in lang:
+        if isinstance(lang_file, list):
+            for l in lang_file:
                 self.load(l)
         else:
-            model = util.cache.get(f'vosk.{lang}', Model(util.data_file(f'vosk/{lang}')))
-            util.cache[f'vosk.{lang}'] = model
+            model = util.cache.get(f'vosk.{lang_file}', Model(util.data_file(f'vosk/{lang_file}')))
+            util.cache[f'vosk.{lang_file}'] = model
+            return model
 
-    def stt(self, source, timeout=None, silence_timeout=None, silence_threshold=-35):
+    def stt(self, source, timeout=None, silence_timeout=2, silence_threshold=-35):
         """speech to text
 
         :param source: 声音来源
         :param timeout: 超时，即最长的识别时间（秒），默认为 `None` 则表示不设置超时
         :type timeout: float, optinal
-        :param silence_timeout: 停顿超时（秒），超过这个时间没有说话则表示已经说完，默认为 `None` 则表示不设置停顿超时
+        :param silence_timeout: 停顿超时（秒），开始说话后超过这个时间的停顿表示已经说完，默认为2秒， `None` 则表示不设置停顿超时
         :type silence_timeout: float, optinal
         :param silence_threshold: 停顿音量的阈值，当音量小于这个阈值则认为没有说话，默认为 `-35` (dBFS)。见 |pydub.AudioSegment(…).dBFS|
         :type silence_rms_threshold: int, optinal
@@ -62,14 +67,18 @@ class STT:
         """
         self._cancel = False
         recognition_count = silence_count = 0.0
+        started = False
         while True:
             segment = source.read()
             if self._cancel:
                 raise Exception('Speech recognition cancelled by another thread')
 
             if self._rec.AcceptWaveform(segment.raw_data):
-                text = self._rec.Result()
+                text = self._rec.FinalResult()
                 break
+
+            if not started and json.loads(self._rec.PartialResult())['partial']:
+                started = True
 
             seg_duration = segment.duration_seconds
             recognition_count += seg_duration
@@ -77,7 +86,7 @@ class STT:
                 text = self._rec.FinalResult()
                 break
             # voice activity detection:
-            if silence_timeout:
+            if silence_timeout and started:
                 if segment.dBFS < silence_threshold:
                     silence_count += seg_duration
                     if silence_count > silence_timeout:

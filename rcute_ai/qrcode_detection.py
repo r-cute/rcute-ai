@@ -2,7 +2,7 @@ from . import util
 import cv2
 import numpy as np
 
-class QRCodeRecognizer(cv2.QRCodeDetector):
+class QRCodeDetector(cv2.QRCodeDetector):
     """二维码识别类
 
     :param use_bgr: 要识别的图片是否是“BGR”色彩模式，默认是 `True` ，“BGR”是opencv默认的模式，设为 `False` 则表示使用“RGB”模式
@@ -33,11 +33,13 @@ class QRCodeRecognizer(cv2.QRCodeDetector):
         tr, br = rightMost[np.argsort(rightMost[:, 1]), :]
         return tr, br, bl, tl
 
-    def recognize(self, img):
+    def detect(self, img, *, annotate=False):
         """从图像中识别物体
 
         :param img: 用来识别的图像
         :type img: numpy.ndarray
+        :param annotate: whether or not to annotate detected results on image, default to `False`
+        :type annotate: bool
         :return: 返回识别到的二维码的位置数组和对应的二维码信息
 
             位置数组中的每个元素是一个 `numpy.ndarray` ，包含二维码四个顶点的位置坐标
@@ -48,7 +50,8 @@ class QRCodeRecognizer(cv2.QRCodeDetector):
         try:
             text, points = self.detectAndDecode(img)[:2]
             points = points is not None and points.reshape(-1, 2).astype(int)
-            return (points, text) if self.is_square(points) else (None, '')
+            res = (points, text) if self.is_square(points) else (None, '')
+            annotate and self.annotate(img, *res)
         except Exception:
             return None, ''
 

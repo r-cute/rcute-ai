@@ -13,7 +13,7 @@ def resize_320x240(img):
         return cv2.resize(img, (0,0), fx=fy, fy=fy), 1/fy
     return img, 1
 
-class FaceRecognizer:
+class FaceDetector:
     """人脸识别类，是对 |face_recognition| 的简单封装，可以从图像中检测人脸的位置并与已知的人脸对比识别他/她们是谁
 
     .. |face_recognition| raw:: html
@@ -72,11 +72,13 @@ class FaceRecognizer:
         """已经记住的所有人的名字的数组"""
         return list(self._face_names)
 
-    def recognize(self, img):
+    def detect(self, img, *, annotate=False):
         """从图像中识别人脸
 
         :param img: 用来识别的图像
         :type img: numpy.ndarray
+        :param annotate: whether or not to annotate detected results on image
+        :type annotate: bool
         :return: 返回识别到的人脸的位置数组和对应的名字数组
 
             位置数组中的每个元素是一个 `tuple` ，包含人脸中心的坐标和人脸的宽和高： `(centerX, centerY, width, height)`
@@ -100,6 +102,7 @@ class FaceRecognizer:
             else:
                 name = None
             names.append(name)
+        annotate and self.annotate(img, ret_locations, names)
         return ret_locations, names
 
     def annotate(self, img, locations, names=None, color='red', text_color='white'):

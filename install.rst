@@ -6,11 +6,12 @@ Windows
 
 * Make sure you use Python 3.7 or 3.8 version 64 bit interpreter. To find out:
 
-    ```
-    import sys
-    print(sys.version>`_
-    print(len("{0:b}".format(sys.maxsize>`_>`_+1, 'bit'>`_
-    ```
+    .. code:: python
+
+        import sys
+        print(sys.version)
+        print(len("{0:b}".format(sys.maxsize))+1, 'bit')
+
 
     if not, install `Python3.7 64-bit <https://www.python.org/ftp/python/3.7.9/python-3.7.9-amd64.exe>`_ , and add it to PATH
 
@@ -20,7 +21,7 @@ Windows
 
     for Python 3.8, download `dlib-19.19.0-cp38-cp38-win_amd64.whl <https://github.com/pratyusa98/face-recognition_dlib_library/raw/main/face-recognition_dlib_library/dlib-19.19.0-cp38-cp38-win_amd64.whl>`_
 
-    install it `python -m pip install xxx.whl`
+    install it with :code:`python -m pip install dlib-xxx.whl`
 
 * Then, install rcute-ai and required data resources, same as described in "Mac OS X" section below
 
@@ -29,7 +30,9 @@ Mac OS X
 
 * install rcute-ai
 
-    `python3 -m pip install rcute-ai`
+    .. code:: bash
+
+        python3 -m pip install rcute-ai
 
 * (Optional) download data resources.
 
@@ -41,7 +44,13 @@ Mac OS X
 
         Download model files from https://alphacephei.com/vosk/models, and unzip to the "vosk" folder, rename unzipped folder as language name that will later be use by `rcute_ai.TTS <https://rcute-ai.readthedocs.io/zh_CN/latest/api/STT.html>`_ class.
 
-        For example, download English model `vosk-model-en-us-daanzu-20200905-lgraph <https://alphacephei.com/vosk/models/vosk-model-en-us-daanzu-20200905-lgraph.zip>`_ , unzip to "vosk" folder, rename "vosk-model-en-us-daanzu-20200905-lgraph" folder to "en".
+        For example, download English model `vosk-model-en-us-daanzu-20200905-lgraph <https://alphacephei.com/vosk/models/vosk-model-en-us-daanzu-20200905-lgraph.zip>`_ , unzip to "vosk" folder
+
+        in "vosk" folder, create a file named "map.json" saying:
+
+        .. code::
+
+            {"en": "vosk-model-en-us-daanzu-20200905-lgraph"}
 
     * Object recognition
 
@@ -56,16 +65,18 @@ Linux
 
 * First, install rcute-ai and required data resources, same as described in "Mac OS X" section above
 
-* `sudo apt install espeak ffmpeg libespeak1`
+* :code:`sudo apt install espeak ffmpeg libespeak1 tesseract-ocr`
+
+* (Optional) install non-English ocr model, for example: :code:`sudo apt install tesseract-ocr-chi-sim` for simplified chinese
 
 * (Optional) install Chinese (Mandarine/Cantonese) TTS
 
-    ```
-    git clone https://codechina.csdn.net/mirrors/caixxiong/espeak-data.git
-    sudo mv /usr/lib/x86_64-linux-gnu/espeak-data /usr/lib/x86_64-linux-gnu/espeak-data.dak
-    sudo unzip espeak-data/espeak-data.zip -d /usr/lib/x86_64-linux-gnu/
-    cd /usr/lib/x86_64-linux-gnu/
-    sudo espeak --compile=zh
-    sudo espeak --compile=zhy
-    ```
+    .. code:: bash
+
+        git clone https://codechina.csdn.net/mirrors/caixxiong/espeak-data.git
+        sudo mv /usr/lib/x86_64-linux-gnu/espeak-data /usr/lib/x86_64-linux-gnu/espeak-data.dak
+        sudo unzip espeak-data/espeak-data.zip -d /usr/lib/x86_64-linux-gnu/
+        cd /usr/lib/x86_64-linux-gnu/
+        sudo espeak --compile=zh
+        sudo espeak --compile=zhy
 

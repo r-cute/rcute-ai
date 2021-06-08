@@ -3,6 +3,7 @@ from PIL import Image, ImageFont, ImageDraw, ImageColor
 import numpy as np
 import math
 import cv2
+import json
 
 # from weakref import WeakValueDictionary
 # # reuse loaded models/data to save memory
@@ -29,6 +30,12 @@ def data_file(file):
     p = path.join(data_dir, file)
     assert path.exists(p), f"{p} does not exist."
     return p
+
+try:
+    with open(data_file('vosk/map.json')) as f:
+        vosk_map = json.load(f)
+except:
+    pass
 
 # def hotword_model_list_snowboy():
 #     return listdir(resource('snowboy/hotword_models'))

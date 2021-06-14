@@ -1,1 +1,2 @@
+include requirements.txt
 include rcute_ai/resources/msyh.ttc

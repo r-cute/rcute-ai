@@ -72,25 +72,26 @@ class FaceDetector:
         """已经记住的所有人的名字的数组"""
         return list(self._face_names)
 
-    def detect(self, img, *, annotate=False):
+    def detect(self, image, *, annotate=False):
         """从图像中识别人脸
 
-        :param img: 用来识别的图像
-        :type img: numpy.ndarray
+        :param image: 用来识别的图像
+        :type image: numpy.ndarray
         :param annotate: whether or not to annotate detected results on image
         :type annotate: bool
         :return: 返回识别到的人脸的位置数组和对应的名字数组
 
-            位置数组中的每个元素是一个 `tuple` ，包含人脸中心的坐标和人脸的宽和高： `(centerX, centerY, width, height)`
+            位置数组中的每个元素是一个 `tuple` ，包含人脸中心的坐标和人脸的宽和高： `(x, y, w, h)`
         :rtype: tuple
         """
-        img, resize_factor = resize_320x240(img)
+        img, resize_factor = resize_320x240(image)
         if self._use_bgr:
-            img = img[:, :, ::-1]
+            img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
         locations = face_recognition.face_locations(img)
-        ret_locations = [((left+right)/2, (top+bottom)/2, right-left, bottom-top) for top, right, bottom, left in locations]
+        ret_locations = [(left, top, right-left, bottom-top) for top, right, bottom, left in locations]
         ret_locations = [tuple(int(a*resize_factor) for a in p) for p in ret_locations]
         if not self._face_encodings:
+            annotate and self.annotate(image, ret_locations)
             return ret_locations, [None]*len(ret_locations)
         names = []
         for encoding in face_recognition.face_encodings(img, locations):
@@ -102,16 +103,16 @@ class FaceDetector:
             else:
                 name = None
             names.append(name)
-        annotate and self.annotate(img, ret_locations, names)
+        annotate and self.annotate(image, ret_locations, names)
         return ret_locations, names
 
-    def annotate(self, img, locations, names=None, color='red', text_color='white'):
+    def annotate(self, img, boxes, names=None, color='red', text_color='white'):
         """在图像中框出人脸，并标记上对应的名字
 
         :param img: 要标记的图像，应该是被 :func:`recognize` 识别过的同一个图像
         :type img: numpy.ndarray
-        :param locations: 人脸的位置数组
-        :type locations: list
+        :param boxes: 人脸的位置数组
+        :type boxes: list
         :param names: 与位置数组对应的名字数组，默认是 `None` ，表示不标注名字
         :type names: list, optional
         :param color: 方框的颜色，默认是红色
@@ -126,9 +127,8 @@ class FaceDetector:
             text_color = text_color[::-1]
         H, W = img.shape[:2]
         if names:
-            for (x, y, w, h), name in zip(locations, names):
-                x, y = x-w//2, y+h//2
-                cv2.rectangle(img, (x, y-h), (x+w, y), color, 1)
+            for (x, y, w, h), name in zip(boxes, names):
+                cv2.rectangle(img, (x, y), (x+w, y+h), color, 1)
                 try:
                     index = self._face_names.index(name)
                 except ValueError:
@@ -136,16 +136,15 @@ class FaceDetector:
                 else:
                     name_image = self._name_images[index]
                 nh, nw = name_image.shape[:2]
-                sy, sy1, sx, sx1 = min(H, y-nh), min(H, y), min(W, x), min(W, x+nw)
+                sy, sy1, sx, sx1 = min(H, y+h-nh), min(H, y+h), min(W, x), min(W, x+nw)
                 cv2.rectangle(img, (x, sy), (sx1, sy1), color, cv2.FILLED)
                 # font = cv2.FONT_HERSHEY_DUPLEX
                 # cv2.putText(img, name if name else 'Unknown', (x+6, y1-6), font, 0.5, (255, 255, 255), 1)
                 # img[sy:sy1, sx:sx1] = cv2.bitwise_or(img[sy:sy1, sx:sx1], name_image)
                 img[sy:sy1, sx:sx1] = (img[sy:sy1, sx:sx1]*(1-name_image)+name_image*text_color).astype(np.uint8)
         else:
-            for x, y, w, h in locations:
-                x, y = x-w//2, y+h//2
-                cv2.rectangle(img, (x, y-h), (x+w, y), color, 1)
+            for x, y, w, h in boxes:
+                cv2.rectangle(img, (x, y), (x+w, y+h), color, 1)
 
 
 

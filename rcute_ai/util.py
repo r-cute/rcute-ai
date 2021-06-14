@@ -86,6 +86,18 @@ def create_text_image(text, area=None):
     draw.text((0,0), text, font=_font, textColor='white')
     return np.divide(np.asarray(img), 255)
 
+def norm_to_pixel(w, h, norm):
+    # return [(m.x*w, m.y*h) for m in norm.landmark]
+    return [(int(m.x*w), int(m.y*h), int(m.z*w)) for m in norm]
+# ref:https://gitee.com/mirrors/mediapipe/blob/master/mediapipe/python/solutions/drawing_utils.py
+def draw_landmarks(img, marks, connections) :
+    for start, end in connections:
+        cv2.line(img, marks[start][:2],marks[end][:2], (0, 255, 0),2)
+    for p in marks:
+        cv2.circle(img, p[:2], 2, (0, 0, 255), 2)
+
+
+
 def imshow(img, win='', wait=1):
     """显示图像
 

@@ -8,6 +8,7 @@ API
    rcute_ai
    FaceDetector
    QRCodeDetector
+   aruco
    ObjectDetector
    hand
    pose

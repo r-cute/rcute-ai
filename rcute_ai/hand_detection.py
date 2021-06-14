@@ -1,4 +1,5 @@
 import cv2, math
+from . import util
 import mediapipe
 mp_drawing = mediapipe.solutions.drawing_utils
 mp_hands = mediapipe.solutions.hands
@@ -24,27 +25,34 @@ class HandDetector(mp_hands.Hands):
         rgb.flags.writeable = False
         hands = self.process(rgb)
         if hands.multi_hand_landmarks:
-            skeleton = hands.multi_hand_landmarks[0]
-            guesture = self.guesture(img, skeleton)
-            annotate and self.annotate(img, skeleton, guesture)
-            return skeleton, guesture
+            marks = hands.multi_hand_landmarks[0]
+            h, w = img.shape[:2]
+            pt = util.norm_to_pixel(w, h, marks.landmark)
+            guesture = self.guesture(pt)
+            annotate and self.annotate(img, pt, guesture)
+            return pt, guesture
         return None, None
 
-    @classmethod
-    def normalized_landmark_to_points(cl, w, h, norm):
-        # return [(m.x*w, m.y*h) for m in norm.landmark]
-        return [(m.x*w, m.y*h, m.z*w) for m in norm.landmark]
 
-    def annotate(self, img, skeleton, guesture=None):
+
+    def annotate(self, img, keypoints, guesture=None):
         """Draw the hand annotations on the image."""
-        img.flags.writeable = True # must
-        mp_drawing.draw_landmarks(img, skeleton, mp_hands.HAND_CONNECTIONS)
+        # img.flags.writeable = True # must
+        # if normalized:
+        #     mp_drawing.draw_landmarks(img, keypoints, mp_hands.HAND_CONNECTIONS)
+        # else:
+        util.draw_landmarks(img, keypoints, mp_hands.HAND_CONNECTIONS)
         guesture and cv2.putText(img, guesture, (30,30), cv2.FONT_HERSHEY_SIMPLEX, .8, (0,0,255), 1, cv2.LINE_AA)
 
     _joints = [[6,8],[10,12],[14,16],[18,20]]
-    def guesture(self, img, skeleton): # only recognize one hand
-        h, w = img.shape[:2]
-        pt = self.normalized_landmark_to_points(w, h, skeleton)
+    def guesture(self, pt): # only recognize one hand
+        """recognize guesture based on key points
+
+        :param pt: one hand key points
+        :type pt: list
+        :return: guesture name
+        :rtype: str
+        """
         pt0 = pt[0]
         finger_stretched = [math.dist(pt[17], pt[4])> math.dist(pt[17], pt[2])] # if thumb is stretched
         for j1, j2 in HandDetector._joints: # for the other 4 fingers

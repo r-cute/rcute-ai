@@ -1,5 +1,9 @@
-import cv2, math
+import cv2
 from . import util
+try:
+    from math import dist # new in python 3.8
+except ImportError:
+    from util import dist
 import mediapipe
 mp_drawing = mediapipe.solutions.drawing_utils
 mp_hands = mediapipe.solutions.hands
@@ -54,11 +58,11 @@ class HandDetector(mp_hands.Hands):
         :rtype: str
         """
         pt0 = pt[0]
-        finger_stretched = [math.dist(pt[17], pt[4])> math.dist(pt[17], pt[2])] # if thumb is stretched
+        finger_stretched = [dist(pt[17], pt[4])> dist(pt[17], pt[2])] # if thumb is stretched
         for j1, j2 in HandDetector._joints: # for the other 4 fingers
-            finger_stretched.append(math.dist(pt[j1], pt0) < math.dist(pt[j2], pt0))
+            finger_stretched.append(dist(pt[j1], pt0) < dist(pt[j2], pt0))
         if not finger_stretched[0] and finger_stretched[2:]== [False, False, False]:
-            a, b, c=math.dist(pt[8], pt[10]), math.dist(pt[12], pt[8]), math.dist(pt[10], pt[6])
+            a, b, c=dist(pt[8], pt[10]), dist(pt[12], pt[8]), dist(pt[10], pt[6])
             if a> c and finger_stretched[1]:
                 return '1'
             return 'fist' if a> b else '9'
@@ -77,7 +81,7 @@ class HandDetector(mp_hands.Hands):
         if finger_stretched == [False, True, True, True, True]:
             return '4'
         if finger_stretched == [True, True, True, True, True]:
-            return '5' if math.dist(pt[12], pt[8])*2 > math.dist(pt[12], pt[16]) else 'long live and prosper'
+            return '5' if dist(pt[12], pt[8])*2 > dist(pt[12], pt[16]) else 'long live and prosper'
         if finger_stretched == [True, False, False, False, True]:
             return '666'
         if finger_stretched == [True, True, False, False, True]:
@@ -91,4 +95,4 @@ class HandDetector(mp_hands.Hands):
             return 'heart' if pinch else 'gun'
 
     def thumb_and_index_finger_pinch(self, pt):
-        return math.dist(pt[4], pt[8])< math.dist(pt[2], pt[5])
+        return dist(pt[4], pt[8])< dist(pt[2], pt[5])

@@ -96,7 +96,8 @@ def draw_landmarks(img, marks, connections) :
     for p in marks:
         cv2.circle(img, p[:2], 2, (0, 0, 255), 2)
 
-
+def dist(p, q):
+    return math.sqrt(sum((px - qx) ** 2.0 for px, qx in zip(p, q)))
 
 def imshow(img, win='', wait=1):
     """显示图像

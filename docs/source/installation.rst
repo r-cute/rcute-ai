@@ -31,6 +31,10 @@ Windows
 Mac OS X
 ++++++++++++
 
+* .. code::
+
+    brew install cmake
+    
 * 安装 rcute-ai，在命令窗口里输入：
 
     .. code::

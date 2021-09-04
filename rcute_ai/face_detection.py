@@ -48,7 +48,8 @@ class FaceDetector:
             file_or_img = face_recognition.load_image_file(file_or_img)
         elif self._use_bgr:
             file_or_img = file_or_img[:, :, ::-1]
-        encodings = face_recognition.face_encodings(file_or_img)
+        locations = face_recognition.face_locations(file_or_img)
+        encodings = face_recognition.face_encodings(file_or_img, locations)
         if not encodings:
             raise RuntimeError('No face found in image')
         self._face_encodings.append(encodings[0])

@@ -32,7 +32,7 @@ class FaceDetector:
         self._use_bgr = use_bgr
         self._unknown_name_image = util.create_text_image("Unknown")
 
-    def memorize(self, name, file_or_img):
+    def memorize(self, name, image):
         """记住某一个人的脸，若在后续的识别中看到这个人脸，就能得到他/她的名字
 
         :param name: 要记住的人的名字
@@ -43,6 +43,7 @@ class FaceDetector:
         :raises AssertionError: 不能再次记住同一个人，否则抛出异常。若要“更新记忆”，先要“忘记”这个人，再从新“记住”
 
         """
+        file_or_img, resize_factor = resize_320x240(image)
         assert name not in self._face_names, f'{name} is already in memory'
         if isinstance(file_or_img, str):
             file_or_img = face_recognition.load_image_file(file_or_img)
